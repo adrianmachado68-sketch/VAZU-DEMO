@@ -1181,6 +1181,30 @@ body.pub .v-top.fx-bajo{background:rgba(247,248,245,.94);-webkit-backdrop-filter
 @keyframes fx-vt-entra{from{opacity:0;transform:translateY(10px)}}
 
 
+/* ---------- Respuesta al toque (celular y compu, página pública y panel) ----------
+   Al presionar: el botón se hunde apenas mientras el dedo o el mouse está encima.
+   Al elegir: lo recién elegido da un saltito de confirmación, una sola vez
+   (la clase .toque-pop la pone el JS solo en lo que cambió). */
+:is(.v-btn,.v-red,.v-dia,.v-hora,.v-saltos button,.v-top-btn,.v-link-btn,.v-galeria button,.v-foto-abre,
+  .btn,.mini,.chip,.vista,.acc-b,.kpi,.menu-item,.dia-fila,.fab,.pan-ico,.fecha-btn,.fcal-dia,.sem-cita,.mes-dia,.pro,.x){
+  transition:transform .14s cubic-bezier(.2,.8,.2,1)}
+:is(.v-btn,.v-red,.v-dia,.v-hora,.v-saltos button,.v-top-btn,.v-galeria button,.v-foto-abre,
+  .btn,.mini,.chip,.vista,.acc-b,.kpi,.menu-item,.fab,.pan-ico,.fecha-btn,.fcal-dia,.pro,.x):active:not([disabled]){transform:scale(.95)}
+/* filas y tarjetas grandes: se hunden menos, para que no se note brusco */
+:is(.v-fila-cab,.v-mitad,.v-cualquiera,.dia-fila,.sem-cita,.mes-dia,.cita){transition:transform .14s cubic-bezier(.2,.8,.2,1)}
+:is(.v-fila-cab,.v-mitad,.v-cualquiera,.dia-fila,.sem-cita,.mes-dia):active:not([disabled]){transform:scale(.985)}
+.v-link-btn:active{transform:translateY(1px)}
+/* saltito al elegir */
+.toque-pop{animation:toque-pop .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes toque-pop{0%{transform:scale(.94)}55%{transform:scale(1.035)}100%{transform:scale(1)}}
+/* la casilla del servicio: el check aparece con un pequeño giro */
+.toque-pop .v-caja svg,.v-fila.toque-pop .v-caja svg{animation:toque-check .3s ease-out}
+@keyframes toque-check{from{transform:scale(.4) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  .toque-pop,.toque-pop .v-caja svg{animation:none!important}
+  *:active{transform:none!important}
+}
+
 /* Movimiento reducido: sin entrada animada (por si la clase llegara a ponerse), todo quieto y visible */
 @media (prefers-reduced-motion:reduce){
   html.fx-intro body.pub *{animation:none!important;opacity:1!important;clip-path:none!important;transform:none!important}
@@ -4626,14 +4650,59 @@ function tic(){
     }
   }
 
+  /* Lo recién elegido (servicio, día, hora, profesional, filtro...) da un saltito.
+     Se compara qué estaba marcado antes de repintar y qué después: solo lo nuevo salta. */
+  const MARCADOS = '.sel, .on, [aria-pressed="true"], [aria-checked="true"]';
+  const llaveDe = el => el.getAttribute('onclick') || ((el.querySelector('[onclick]')||{}).getAttribute ? el.querySelector('[onclick]').getAttribute('onclick') : '') || '';
+  const marcados = raizEl => new Set([...raizEl.querySelectorAll(MARCADOS)].map(llaveDe).filter(Boolean));
+  function saltar(raizEl, antes){
+    if(reducido()) return;
+    for(const el of raizEl.querySelectorAll(MARCADOS)){
+      const k = llaveDe(el);
+      if(!k || antes.has(k)) continue;
+      // en filas del menú salta toda la fila; en lo demás, el propio botón
+      const blanco = el.closest('.v-fila') || el;
+      blanco.classList.remove('toque-pop'); void blanco.offsetWidth; blanco.classList.add('toque-pop');
+      blanco.addEventListener('animationend', () => blanco.classList.remove('toque-pop'), {once:true});
+    }
+  }
+  // elegir profesional pasa enseguida al paso siguiente: primero se ve el saltito y después avanza
+  const elegirProfOriginal = window.elegirProf;
+  if(typeof elegirProfOriginal === 'function'){
+    window.elegirProf = function(id){
+      const args = arguments, yo = this;
+      const boton = [...document.querySelectorAll('.v-mitad, .v-cualquiera')].find(b => (b.getAttribute('onclick')||'').includes("'"+id+"'"));
+      if(!boton || reducido()) return elegirProfOriginal.apply(yo, args);
+      boton.classList.add('toque-pop');
+      setTimeout(() => elegirProfOriginal.apply(yo, args), 220);
+    };
+  }
+  // en iPhone, :active solo funciona si la página escucha toques
+  addEventListener('touchstart', () => {}, {passive:true});
+
   function despues(){
     // las fotos de Trabajos se piden desde el inicio: al llegar a la sección ya están listas
     seguro(() => document.querySelectorAll('.v-inicio .v-galeria img').forEach(img => { img.loading = 'eager'; }), 'fotos');
   }
   const pintarOriginal = window.pintar;
   window.pintar = function(){
+    const app = document.getElementById('app');
+    // solo salta lo que se eligió en esta misma pantalla (no al pasar de un paso a otro)
+    const pantalla = () => [V.pantalla, V.paso, V.admin && V.admin.tab, V.admin && V.admin.vista].join('|');
+    const donde = pantalla();
+    const antes = app ? marcados(app) : new Set();
     const r = pintarOriginal.apply(this, arguments);
     despues();
+    if(app && pantalla() === donde) seguro(() => saltar(app, antes), 'saltar');
+    return r;
+  };
+  // las ventanas (cita manual, mover, mensajes...) también se repintan: mismo saltito
+  const modalOriginal = window.modal;
+  window.modal = function(){
+    const capa = document.getElementById('capa-modal');
+    const antes = capa ? marcados(capa) : new Set();
+    const r = modalOriginal.apply(this, arguments);
+    if(capa && antes.size) seguro(() => saltar(capa, antes), 'saltar');
     return r;
   };
   seguro(paralaje, 'paralaje');
