@@ -255,13 +255,42 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xm
 .cita-enc .sub{font-size:11.5px;color:var(--lectura);margin-top:3px}
 .cita-enc .lado{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
 .cita .cuerpo-cita{margin-top:12px;padding-top:12px;border-top:1px solid var(--linea)}
-.acc{display:flex;gap:7px;margin-top:13px;flex-wrap:wrap}
-/* en celular, los botones de una cita en una grilla pareja de dos; el último impar ocupa todo el ancho */
-@media(max-width:560px){
-  .acc{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .acc > .mini{justify-content:center;min-height:40px;padding:9px 8px}
-  .acc > :last-child:nth-child(odd){grid-column:1 / -1}
+.acc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+/* botones de acción por color */
+.acc-b{display:flex;align-items:center;justify-content:center;gap:7px;min-height:46px;padding:8px 10px;border-radius:14px;border:1px solid;
+  font-size:13.5px;line-height:1.2;text-align:center;text-decoration:none;font-weight:400;transition:background .15s,border-color .15s,transform .1s}
+.acc-b svg{width:16px;height:16px;flex:none}
+.acc-b:active{transform:scale(.97)}
+.acc-b.doble{grid-column:span 2}
+.acc-b.ok{background:#4E6B4F;border-color:#4E6B4F;color:#fff;font-weight:500}
+.acc-b.no{background:#F8ECE7;border-color:#E9CBBE;color:#8A3B27}
+.acc-b.mover{background:#EDF2F6;border-color:#C9D6E2;color:#3A5268}
+.acc-b.durar{background:#F8F2E3;border-color:#E5D3A9;color:#74561C}
+.acc-b.wa{background:#EEF4EC;border-color:#C9DBC4;color:#3B5A3E}
+.acc-b.borrar{background:#fff;border-color:var(--linea-fuerte);color:#6B6C5C}
+@media(hover:hover){
+  .acc-b.ok:hover{background:#40593F}
+  .acc-b.no:hover{background:#F3DDD3}
+  .acc-b.mover:hover{background:#E1EAF1}
+  .acc-b.durar:hover{background:#F2E8CF}
+  .acc-b.wa:hover{background:#E1ECDE}
+  .acc-b.borrar:hover{border-color:#8A3B27;color:#8A3B27}
 }
+/* encabezado de la cita */
+.cita-hoja{flex:none;width:52px;border:1px solid var(--linea-fuerte);border-radius:12px;overflow:hidden;text-align:center;background:#fff;display:flex;flex-direction:column}
+.cita-hoja span:first-child{background:color-mix(in srgb,var(--c,var(--oliva)) 26%,#fff);color:var(--texto);font-size:11px;padding:3px 0}
+.cita-hoja b{font-family:var(--disp);font-weight:400;font-size:22px;line-height:1;padding:5px 0 1px;color:var(--texto)}
+.cita-hoja span:last-child{font-size:11px;color:var(--lectura);padding-bottom:5px}
+.cita-rango{font-size:15px;color:var(--texto);margin-top:2px;font-variant-numeric:tabular-nums}
+.cita-enc .sub .origen{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:20px;background:var(--suave);color:var(--lectura);font-size:11px}
+/* contacto tocable */
+.contacto{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--linea)}
+.contacto a{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--linea-fuerte);border-radius:20px;color:var(--texto);
+  text-decoration:none;font-size:13px;max-width:100%;overflow:hidden}
+.contacto a span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.contacto svg{width:15px;height:15px;flex:none;color:var(--oliva-prof)}
+/* en celular, los botones caben en tres columnas: el texto largo baja a dos líneas */
+@media(max-width:560px){ .acc-b{padding:8px 6px;font-size:13px;gap:6px} }
 .vacio-mini{margin:4px 0 8px;padding:14px 0;font-size:12.5px;color:var(--lectura);text-align:center;border:1px dashed var(--linea);border-radius:var(--r-sm)}
 
 /* ---------- panel: encabezado con campanita y menú ---------- */
@@ -512,6 +541,8 @@ body:not(.pub) .aviso-flotante{left:16px;transform:none;bottom:calc(30px + env(s
   border-radius:18px;line-height:1.35;letter-spacing:.01em;font-size:13px;transition:opacity .25s}
 body:not(.pub) .aviso-flotante.ver{bottom:calc(30px + env(safe-area-inset-bottom))}
 @media(min-width:801px){ body:not(.pub) .aviso-flotante{left:50%;transform:translateX(-50%);max-width:420px} }
+/* con una ventana abierta, el aviso sube arriba para no tapar sus botones */
+body:has(#capa-modal .velo) .aviso-flotante,body:has(#capa-modal .velo) .aviso-flotante.ver{top:calc(16px + env(safe-area-inset-top));bottom:auto}
 .vacio{text-align:center;padding:34px 20px;color:var(--lectura);font-size:13px;line-height:1.7}
 .vacio .ic{width:40px;height:40px;margin:0 auto 12px;border-radius:50%;border:1px solid var(--linea);display:flex;align-items:center;justify-content:center}
 .vacio .ic svg{width:17px;height:17px;stroke:var(--oliva);fill:none;stroke-width:1.2}
@@ -928,6 +959,45 @@ body.pub .v-sinpe .v-meta{color:var(--tinta)}
 .v-total{font-size:18px;font-weight:500}
 .v-atras{margin-left:auto}
 .v-barra-det{flex-basis:100%}
+/* lo que llevás elegido, en palabras, sobre el botón */
+.v-barra-sel{flex-basis:100%;order:-1;font-size:14px;line-height:1.35;color:var(--tinta);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* encabezado de la reserva: número y nombre del paso, barra en tramos */
+body.pub .v-paso{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}
+body.pub .v-paso span{font-size:12px;color:var(--gris)}
+body.pub .v-paso b{font-weight:500;font-size:14px;color:var(--tinta)}
+.v-tramos{position:absolute;left:20px;right:20px;bottom:0;display:flex;gap:4px}
+.v-tramos i{flex:1;height:3px;border-radius:2px;background:#DEDFD3;transition:background .3s}
+.v-tramos i.listo{background:var(--campo)}
+.v-tramos i.ahora{background:var(--accion)}
+
+/* servicios: atajos a las categorías, fijos bajo el encabezado */
+.v-saltos{position:sticky;top:56px;z-index:20;display:flex;align-items:center;gap:8px;overflow-x:auto;margin:14px -20px 0;padding:10px 20px;
+  background:var(--frio);border-bottom:1px solid var(--hilo);scrollbar-width:none}
+.v-saltos::-webkit-scrollbar{display:none}
+body.pub .v-saltos button{flex:none;border:1px solid var(--hilo);background:#fff;border-radius:20px;padding:7px 14px;font-size:13.5px;color:var(--tinta);white-space:nowrap}
+body.pub .v-saltos button:hover{border-color:var(--accion)}
+.v-cuenta-sel{flex:none;margin-left:auto;padding-left:6px;font-size:12.5px;color:var(--gris);white-space:nowrap}
+body.pub .v-fila.elegible.sel{background:rgba(168,169,141,.13)}
+.v-cat[id]{scroll-margin-top:120px}
+
+/* día: los días con espacio se ven tocables; leyenda debajo */
+body.pub .v-dia:not([disabled]):not(.sel){background:rgba(168,169,141,.16);border-radius:50%;width:42px;height:42px;margin:2px auto;display:block}
+body.pub .v-dia.sel{border-radius:50%;width:42px;height:42px;margin:2px auto;display:block}
+.v-leyenda{display:flex;flex-wrap:wrap;gap:6px 16px;margin:14px 0 0;font-size:12.5px;color:var(--gris)}
+.v-leyenda span{display:inline-flex;align-items:center;gap:6px}
+.v-leyenda i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.v-leyenda i.libre{background:rgba(168,169,141,.4)}
+.v-leyenda i.lleno{border:1px solid #C9CABC}
+.v-leyenda i.hoy{border-bottom:2px solid var(--hilo);border-radius:0;height:8px}
+.v-elegido{margin:14px 0 0;padding:12px 14px;border-left:3px solid var(--accion);background:rgba(168,169,141,.12);font-size:14.5px}
+
+/* datos: tu cita, con atajos para cambiar cada parte */
+.v-tu-cita{margin:6px 0 18px;border:1px solid var(--hilo);border-radius:6px;background:#fff;padding:4px 14px}
+.v-tc-fila{display:grid;grid-template-columns:62px 1fr auto;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px solid #E6E7DD;font-size:14.5px}
+.v-tc-fila .v-link-btn{font-size:13px}
+.v-tc-total{display:flex;justify-content:space-between;padding:11px 0 9px;font-size:14.5px;color:var(--gris)}
+.v-tc-total .v-num{color:var(--tinta);font-weight:500;font-size:16px}
 
 /* galería, políticas y pie */
 .v-galeria{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:0 -20px}
@@ -1186,32 +1256,77 @@ function datosIniciales(){
    Van de vos, como escriben ellas en sus redes.
    ------------------------------------------------------------ */
 const MENSAJES_WA = {
+  // Reserva hecha por el link, con depósito pendiente
   apartada:
-    'Hola {nombre}, te escribimos de VAZÚ Nails Beauty. Tenemos apartado tu espacio con {profesional} el {dia} a las {hora} para {servicios}. '+
-    'Falta el depósito de {deposito} por SINPE al {sinpe} para dejarlo confirmado. '+
-    'Si no nos llega antes de que venza el apartado, el horario vuelve a quedar libre. ¡Gracias!',
+    'Hola, {nombre}. Te escribimos de VAZÚ Nails Beauty.\n\n'+
+    'Te apartamos este espacio:\n'+
+    'Día: {dia}\nHora: {hora}\nCon: {profesional}\nServicio: {servicios}\n\n'+
+    'Para dejarlo confirmado falta el depósito de {deposito} por SINPE Móvil al {sinpe}. '+
+    'Si no nos llega a tiempo, el espacio vuelve a quedar libre.\n\n'+
+    '¡Gracias!',
+  // Llegó el comprobante del depósito
   pendiente:
-    'Hola {nombre}, te escribimos de VAZÚ Nails Beauty. Ya recibimos tu comprobante del depósito para la cita del {dia} a las {hora} con {profesional}. '+
-    'Lo estamos revisando y en un ratito te confirmamos.',
+    'Hola, {nombre}. Ya nos llegó tu comprobante del depósito, ¡gracias!\n\n'+
+    'Lo estamos revisando y en un ratito te confirmamos tu cita del {dia} a las {hora} con {profesional}.',
   pendienteSin:
-    'Hola {nombre}, te escribimos de VAZÚ Nails Beauty. Recibimos tu reserva para el {dia} a las {hora} con {profesional}, para {servicios}. '+
-    'En un ratito te la confirmamos.',
+    'Hola, {nombre}. Te escribimos de VAZÚ Nails Beauty.\n\n'+
+    'Nos llegó tu reserva:\n'+
+    'Día: {dia}\nHora: {hora}\nCon: {profesional}\nServicio: {servicios}\n\n'+
+    'En un ratito te la confirmamos por aquí.',
+  // Confirmada
   aprobada:
-    'Hola {nombre}, tu cita con {profesional} quedó confirmada para el {dia} a las {hora}, para {servicios} ({duracion}). '+
-    'El día de la cita pagás {resta}, porque el depósito de {deposito} ya está descontado.{extras} '+
-    'Te esperamos en San Antonio de Belén.',
+    'Hola, {nombre}. ¡Tu cita quedó confirmada!\n\n'+
+    'Día: {dia}\nHora: {hora}\nCon: {profesional}\nServicio: {servicios}\nDuración: {duracion} aprox.\n\n'+
+    'El total es {total}. Como ya pagaste {deposito} de depósito, el día de la cita quedan {resta}.{extras}\n\n'+
+    'En un momento te mandamos la ubicación exacta. Si te surge algo, avisanos con tiempo y lo acomodamos.',
   aprobadaSin:
-    'Hola {nombre}, tu cita con {profesional} quedó confirmada para el {dia} a las {hora}, para {servicios} ({duracion}). '+
-    'El total es {total}.{extras} Te esperamos en San Antonio de Belén.',
-  otro:
-    'Hola {nombre}, te escribimos de VAZÚ Nails Beauty por tu cita del {dia} a las {hora}.',
-  // Cuando el estudio mueve una cita. {antes} = día y hora que tenía la cita.
+    'Hola, {nombre}. ¡Tu cita quedó confirmada!\n\n'+
+    'Día: {dia}\nHora: {hora}\nCon: {profesional}\nServicio: {servicios}\nDuración: {duracion} aprox.\nTotal: {total}{extras}\n\n'+
+    'En un momento te mandamos la ubicación exacta. Si te surge algo, avisanos con tiempo y lo acomodamos.',
+  // Un día antes, o el mismo día
+  recordatorio:
+    'Hola, {nombre}. Te recordamos tu cita en VAZÚ Nails Beauty:\n\n'+
+    'Día: {dia}\nHora: {hora}\nCon: {profesional}\n\n'+
+    'Si por algo no podés llegar, avisanos por aquí para darle el espacio a otra persona. ¡Te esperamos!',
+  // El estudio movió la cita. {antes} = día y hora que tenía.
   movida:
-    'Hola {nombre}, ¿cómo estás? Te escribimos de VAZÚ Nails Beauty. '+
-    'Tuvimos que hacer un cambio en tu cita: estaba para el {antes} y ahora queda para el {dia} a las {hora}, con {profesional}. '+
-    'Disculpá la molestia. Si ese espacio no te funciona, respondenos por aquí y con mucho gusto buscamos otro que te quede mejor. '+
-    '¡Muchas gracias por la comprensión!'
+    'Hola, {nombre}. ¿Cómo estás? Te escribimos de VAZÚ Nails Beauty.\n\n'+
+    'Tuvimos que hacer un cambio en tu cita:\n'+
+    'Antes: {antes}\n'+
+    'Ahora: {dia} a las {hora}, con {profesional}\n\n'+
+    'Disculpá la molestia. Si ese horario no te funciona, respondenos por aquí y buscamos otro que te quede mejor.',
+  // Se ajustó cuánto dura la cita (cambia la hora de salida)
+  duracion:
+    'Hola, {nombre}. Te escribimos de VAZÚ Nails Beauty.\n\n'+
+    'Revisamos tu diseño y para hacerlo con calma tu cita del {dia} va a durar {duracion} aproximadamente: '+
+    'empieza a las {hora} y terminás cerca de {fin}.\n\n'+
+    'Si ese tiempo no te funciona, decinos y lo vemos.',
+  // No se pudo atender esa solicitud
+  rechazada:
+    'Hola, {nombre}. Gracias por escogernos.\n\n'+
+    'Lamentablemente no vamos a poder atenderte el {dia} a las {hora}. '+
+    '¿Te ayudamos a buscar otro día? Respondenos por aquí o reservá de nuevo en la página.{depositoNota}',
+  // Cancelada por el estudio
+  cancelada:
+    'Hola, {nombre}. Te escribimos de VAZÚ Nails Beauty.\n\n'+
+    'Tu cita del {dia} a las {hora} con {profesional} quedó cancelada.\n\n'+
+    'Si querés reprogramarla, decinos qué día te sirve y te buscamos espacio.{depositoNota}',
+  // Venció el apartado sin depósito
+  expirada:
+    'Hola, {nombre}. El espacio que tenías apartado para el {dia} a las {hora} se liberó porque no nos llegó el depósito.\n\n'+
+    'Si todavía querés la cita, respondenos por aquí y vemos qué espacios hay.',
+  // Después de atenderla
+  completada:
+    '¡Gracias por venir, {nombre}! Fue un gusto atenderte.\n\n'+
+    'Si subís una foto de tus uñas, etiquetanos en Instagram (@{instagram}) y la compartimos. ¡Te esperamos para la próxima!',
+  otro:
+    'Hola, {nombre}. Te escribimos de VAZÚ Nails Beauty por tu cita del {dia} a las {hora}.'
 };
+/* Nombre de cada mensaje, para los botones de la ventana */
+const NOMBRE_MSG = {apartada:'Falta el depósito', pendiente:'Comprobante recibido', pendienteSin:'Reserva recibida',
+  aprobada:'Confirmación', aprobadaSin:'Confirmación', recordatorio:'Recordatorio', movida:'Cambio de hora',
+  duracion:'Nueva duración', rechazada:'No se puede atender', cancelada:'Cancelación', expirada:'Apartado vencido',
+  completada:'Gracias por venir', otro:'Mensaje libre'};
 
 // Llave propia: si NÄS y VAZÚ se abren en la misma compu, no se pisan las citas.
 const LLAVE = 'vazu_agenda_demo_v1';
@@ -1634,7 +1749,7 @@ const POLITICAS = [
 ];
 
 const urlIG = () => 'https://instagram.com/'+S.config.instagram;
-const saludoWA = () => 'Hola, vengo de la página de VAZÚ Nails Beauty.';
+const saludoWA = () => 'Hola, vi su página y quería hacerles una consulta.';
 
 /* Descripción corta con "Ver más". La llave distingue dónde se muestra. */
 function descHTML(llave, txt){
@@ -1895,11 +2010,14 @@ function encReserva(){
   const l = pasosVisibles(), i = l.indexOf(V.paso);
   const total = l.length + (l.includes(PASO_DISENIO) ? 0 : 1);
   const hechos = i < 0 ? total : i + 1 + (l.includes(PASO_DISENIO) || V.paso < PASO_DISENIO ? 0 : 1);
-  const avance = V.paso >= 7 ? 100 : Math.round((hechos / total) * 100);
+  const nombres = {1:'Con quién', 2:'Servicio', [PASO_DISENIO]:'Diseño', 3:'Día', 4:'Hora', 5:'Tus datos', 6:'Depósito'};
+  // la barra en tramos: uno por paso, lleno hasta el actual (el de diseño cuenta siempre, para que no cambie)
+  let tramos = '';
+  for(let k = 1; k <= total; k++) tramos += '<i class="'+(k < hechos || V.paso >= 7 ? 'listo' : (k === hechos ? 'ahora' : ''))+'"></i>';
   return '<header class="v-enc"><span class="v-marca">VAZÚ</span>'+
-    (i >= 0 ? '<span class="v-paso">Paso '+(i+1)+'</span>' : '')+
+    (i >= 0 ? '<span class="v-paso"><span>Paso '+(i+1)+'</span><b>'+nombres[V.paso]+'</b></span>' : '')+
     '<button class="v-x" onclick="irInicio()" aria-label="Salir de la reserva">'+ICO_X+'</button>'+
-    '<span class="v-prog" aria-hidden="true"><i style="width:'+avance+'%"></i></span></header>';
+    '<span class="v-tramos" aria-hidden="true">'+tramos+'</span></header>';
 }
 function tituloPaso(t){ return '<h1 class="v-h1">'+t+'</h1>'; }
 
@@ -1969,11 +2087,15 @@ function pasoServicios(){
   // con una profesional específica, solo lo que ella hace
   const p = V.prof && V.prof !== 'cualquiera' ? prof(V.prof) : null;
   const disponible = s => p ? hace(p, s) : profsActivas().some(x => hace(x, s));
+  // atajos: saltar directo a la categoría que te interesa, sin bajar todo el menú
+  const cats = CATEGORIAS.filter(cat => cat.id === 'extras' ? S.adicionales.length : S.servicios.some(s => s.cat === cat.id && disponible(s)));
+  h += '<nav class="v-saltos" aria-label="Categorías">'+cats.map(cat =>
+    '<button onclick="saltarA(\''+'cat-'+cat.id+'\')">'+esc(cat.n)+'</button>').join('')+'</nav>';
   for(const cat of CATEGORIAS){
     if(cat.id === 'extras') continue;
     const lista = S.servicios.filter(s => s.cat === cat.id && disponible(s));
     if(!lista.length) continue;
-    h += '<h2 class="v-cat">'+esc(cat.n)+'</h2><div class="v-lista">';
+    h += '<h2 class="v-cat" id="cat-'+cat.id+'">'+esc(cat.n)+'</h2><div class="v-lista">';
     for(const s of lista){
       const on = V.sel.includes(s.id);
       // se puede tocar si las reglas lo permiten (una variante del pedicure sí cambia la otra aunque ya haya dos)
@@ -1996,7 +2118,7 @@ function pasoServicios(){
   }
 
   if(S.adicionales.length){
-    h += '<h2 class="v-cat">Extras</h2><div class="v-lista">';
+    h += '<h2 class="v-cat" id="cat-extras">Extras</h2><div class="v-lista">';
     for(const a of S.adicionales){
       const on = (V.adic[a.id]||0) > 0;
       h += '<div class="v-fila elegible'+(on?' sel':'')+'">'+
@@ -2061,6 +2183,11 @@ function pasoDia(){
   h += conQuien();
   h += '<p class="v-bajada">Se pueden elegir los días donde caben '+dur(t.minutos)+' seguidos. Los demás aparecen en gris.</p>';
   h += calendario();
+  h += '<div class="v-leyenda" aria-hidden="true"><span><i class="libre"></i>Con espacio</span><span><i class="lleno"></i>Sin espacio</span><span><i class="hoy"></i>Hoy</span></div>';
+  if(V.fecha){
+    const n = espaciosCliente(V.fecha, totalSel().minutos).length;
+    h += '<p class="v-elegido">'+capital(fechaLarga(V.fecha))+': '+n+' horario'+(n===1?'':'s')+' libre'+(n===1?'':'s')+'.</p>';
+  }
   return h + barraInferior();
 }
 
@@ -2121,8 +2248,9 @@ function pasoHora(){
     '</button>';
   };
   const manana = libres.filter(x=>x.t<12*60), tarde = libres.filter(x=>x.t>=12*60);
-  if(manana.length) h += '<h2 class="v-grupo">Mañana</h2><div class="v-horas">'+manana.map(celda).join('')+'</div>';
-  if(tarde.length)  h += '<h2 class="v-grupo">Tarde</h2><div class="v-horas">'+tarde.map(celda).join('')+'</div>';
+  const grupo = (t, l) => '<h2 class="v-grupo">'+t+' <span class="v-meta">'+l.length+' horario'+(l.length===1?'':'s')+'</span></h2><div class="v-horas">'+l.map(celda).join('')+'</div>';
+  if(manana.length) h += grupo('Mañana', manana);
+  if(tarde.length)  h += grupo('Tarde', tarde);
   if(V.hora!=null) h += '<p class="v-bajada v-fin">'+(V.horaProf?'Te atiende '+esc(nombreProf(V.horaProf))+'. ':'')+
     'Terminás cerca de '+alaHora(aHora(V.hora+t.minutos))+'</p>';   // la hora ya termina en "p.m."
   return h + barraInferior();
@@ -2133,6 +2261,7 @@ function pasoDatos(){
   const c = V.cliente, e = V.errores;
   const conDep = S.config.pideDeposito;
   let h = tituloPaso('Tus datos');
+  h += tuCita();
   h += '<p class="v-bajada">'+(conDep ? 'Para confirmarte la cita y para el detalle del depósito.'
                                       : 'Para confirmarte la cita por WhatsApp.')+'</p>';
   h += '<div class="v-campo"><label for="f-nombre">Nombre y apellido</label>'+
@@ -2219,6 +2348,25 @@ function pasoConfirmado(){
   return h;
 }
 
+/* "Tu cita": lo que llevás elegido, antes de dejar los datos. Con un toque se vuelve a cualquier parte. */
+function tuCita(){
+  const t = totalSel(), quien = V.horaProf || (V.prof !== 'cualquiera' ? V.prof : null);
+  const fila = (et, val, paso) => '<div class="v-tc-fila"><span class="v-meta">'+et+'</span><span>'+val+'</span>'+
+    '<button class="v-link-btn" onclick="irPaso('+paso+')">Cambiar</button></div>';
+  let h = '<section class="v-tu-cita" aria-label="Tu cita">';
+  if(V.fecha && V.hora != null) h += fila('Cuándo', capital(fechaLarga(V.fecha))+', '+hora12(V.hora)+' a '+hora12(V.hora + t.minutos), 3);
+  if(quien && profsActivas().length > 1) h += fila('Con', esc(nombreProf(quien)), 1);
+  h += fila('Qué', esc(V.sel.map(servicio).filter(Boolean).map(nomServ).join(' + ')), 2);
+  h += '<div class="v-tc-total"><span>'+dur(t.minutos)+'</span><span class="v-num">'+col(t.precio)+(t.consultar?' + extras':'')+'</span></div>';
+  return h+'</section>';
+}
+function saltarA(id){
+  const el = document.getElementById(id); if(!el) return;
+  const enc = document.querySelector('.v-enc'), saltos = document.querySelector('.v-saltos');
+  const arriba = (enc ? enc.offsetHeight : 0) + (saltos ? saltos.offsetHeight : 0) + 8;
+  window.scrollTo({top: el.getBoundingClientRect().top + scrollY - arriba, behavior: 'smooth'});
+}
+
 /* Resumen de una cita, como una cuenta: filas y línea fina */
 function resumenCita(c, conFecha){
   let h = '<div class="v-resumen">';
@@ -2259,6 +2407,7 @@ function barraInferior(){
     }
     if(prev) h += '<button class="v-link-btn v-atras" onclick="irPaso('+prev+')">Atrás</button>';
     if(V.sel.length && V.paso > 1){
+      h += '<span class="v-barra-sel">'+esc(V.sel.map(servicio).filter(Boolean).map(nomServ).join(' + '))+'</span>';
       h += '<span class="v-meta v-barra-det">'+dur(t.minutos)+
         (V.fecha && V.paso>=4 ? ', '+fechaCorta(V.fecha).toLowerCase()+(V.hora!=null?' a '+alaHora(aHora(V.hora)):'') : '')+'</span>';
     }
@@ -2482,24 +2631,24 @@ function copiaVieja(txt, ok){
 function abrirWhatsApp(id){
   const c = S.citas.find(x=>x.id===id); if(!c) return;
   const l = [];
-  l.push('Hola, reservé una cita con '+nombreProf(c.prof)+' por la agenda en línea de VAZÚ.');
+  l.push('Hola, acabo de reservar por la página de VAZÚ.');
   l.push('');
   l.push('Nombre: '+c.cliente.nombre);
-  l.push('Día: '+fechaLarga(c.fecha));
+  l.push('Día: '+capital(fechaLarga(c.fecha)));
   l.push('Hora: '+hora12(aMin(c.hora)));
   l.push('Con: '+nombreProf(c.prof));
-  l.push('Servicios: '+c.servicios.map(nomServ).join(' + '));
-  if(c.adicionales && c.adicionales.length) l.push('Extras: '+c.adicionales.map(a=>a.nombre+(a.precio==null?' (precio a consultar)':'')).join(', '));
-  if(c.disenio) l.push('Diseño: '+c.disenio);
-  l.push('Duración: '+dur(c.duracion));
+  l.push('Servicio: '+c.servicios.map(nomServ).join(' + '));
+  if(c.adicionales && c.adicionales.length) l.push('Extras: '+c.adicionales.map(a=>a.nombre+(a.precio==null?' (a consultar)':'')).join(', '));
+  if(c.nivel) l.push('Diseño: '+c.nivel.n.toLowerCase());
+  if(c.disenio) l.push('Detalle del diseño: '+c.disenio);
+  l.push('Duración: unos '+dur(c.duracion));
   l.push('Total'+(tieneConsulta(c)?' de servicios':'')+': '+col(c.total));
-  if(tieneConsulta(c)) l.push(NOTA_EXTRAS);
   if(c.deposito > 0){
-    l.push('Depósito enviado: '+col(c.deposito));
-    if(c.comprobante) l.push('Comprobante: '+c.comprobante);
     l.push('');
-    l.push('Adjunto la captura del SINPE.');
+    l.push('Ya hice el depósito de '+col(c.deposito)+(c.comprobante ? ' (comprobante '+c.comprobante+')' : '')+'. Les adjunto la captura.');
   }
+  l.push('');
+  l.push('Quedo pendiente de la confirmación. ¡Gracias!');
   window.open('https://wa.me/'+S.config.whatsapp+'?text='+encodeURIComponent(l.join('\n')), '_blank');
 }
 /* ============================================================
@@ -2542,8 +2691,8 @@ function elegirYo(){
 }
 function soy(id){
   V.admin.yo = id;
-  // cada una arranca viendo su propia agenda; "Todas" y la otra quedan a un toque
-  if(S.profesionales.length > 1) V.admin.prof = id;
+  // cada una ve solo su propia agenda
+  V.admin.prof = id; V.admin.cfgProf = id;
   cerrarModal();
   if(V.pantalla !== 'admin'){ V.admin.fecha = hoyCR(); V.pantalla = 'admin'; window.scrollTo(0,0); }
   aviso('Panel de '+nombreProf(id));
@@ -2602,7 +2751,8 @@ function verAdmin(){
     '<button class="pan-ico" onclick="abrirMenu()" aria-label="Abrir el menú" aria-haspopup="dialog">'+ICO_PANEL.menu+'</button>'+
   '</header>';
   h += '<div class="cuerpo" style="padding-top:16px">';
-  if(V.admin.tab !== 'config') h += filtroPro();
+  // agendas separadas: quien entra como Valeria ve solo lo de Valeria (y lo mismo con Melissa)
+  if(V.admin.yo && prof(V.admin.yo)){ V.admin.prof = V.admin.yo; V.admin.cfgProf = V.admin.yo; }
   if(V.admin.tab==='solicitudes') h += tabSolicitudes();
   if(V.admin.tab==='agenda')      h += tabAgenda();
   if(V.admin.tab==='config')      h += tabConfig();
@@ -2676,16 +2826,33 @@ function modalCita(id){
 function refrescarCita(id){ if(S.citas.some(x => x.id === id)) modalCita(id); else cerrarModal(); }
 
 /* Los botones de una cita, iguales en la agenda y en la ventana de la cita */
+/* Botones de acción: cada movimiento con su color, para reconocerlo de un vistazo.
+   verde lleno = sí (aprobar, completar) · terracota = no (rechazar, cancelar, liberar)
+   azul = mover · ámbar = duración · verde claro = WhatsApp · gris = eliminar */
+const ICO_ACC = {
+  ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  no:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 7l10 10M17 7L7 17"/></svg>',
+  mover:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M10 15h5m-2-2l2 2-2 2"/></svg>',
+  durar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="13" r="7.5"/><path d="M12 9.5V13l2.5 2M10 3h4"/></svg>',
+  borrar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 7h15M10 7V4.5h4V7M6.5 7l1 12.5h9l1-12.5"/></svg>',
+  tel:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.3a10 10 0 005.2 5.2l1.3-2 4 1.5v3a2 2 0 01-2.2 2A16 16 0 014.5 6.2 2 2 0 016.5 4z"/></svg>',
+  correo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 7l8 6 8-6"/></svg>'
+};
+const btnAcc = (tipo, txt, accion, extra) =>
+  '<button class="acc-b '+tipo+(extra||'')+'" onclick="'+accion+'">'+(ICO_ACC[tipo]||'')+'<span>'+txt+'</span></button>';
 function accionesCita(c, enVentana){
   const id = c.id, luego = enVentana ? ';refrescarCita(\''+id+'\')' : '';
   const activa = !['rechazada','cancelada','expirada'].includes(c.estado);
-  let h = botonWA(c);
-  if(activa && c.estado !== 'completada') h += '<button class="mini" onclick="modalMover(\''+id+'\')">Mover</button>';
-  if(c.estado === 'pendiente') h += '<button class="mini" onclick="modalDuracion(\''+id+'\')">Ajustar duración</button>';
-  if(c.estado === 'pendiente') h += '<button class="mini g" onclick="aprobar(\''+id+'\')'+luego+'">Aprobar</button>';
-  if(c.estado === 'aprobada') h += '<button class="mini g" onclick="completar(\''+id+'\')'+luego+'">Marcar completada</button>';
-  if(activa) h += '<button class="mini r" onclick="cancelar(\''+id+'\')'+luego+'">Cancelar</button>';
-  h += '<button class="mini r" onclick="eliminarCita(\''+id+'\')'+luego+'">Eliminar</button>';
+  let h = '';
+  // primera fila: la decisión, grande
+  if(c.estado === 'pendiente') h += btnAcc('ok', 'Aprobar', 'aprobar(\''+id+'\')'+luego, ' doble')+btnAcc('no', 'Rechazar', 'rechazar(\''+id+'\')'+luego);
+  if(c.estado === 'aprobada') h += btnAcc('ok', 'Marcar completada', 'completar(\''+id+'\')'+luego, ' doble')+btnAcc('no', 'Cancelar', 'cancelar(\''+id+'\')'+luego);
+  if(c.estado === 'apartada') h += btnAcc('no', 'Liberar ahora', 'liberar(\''+id+'\')'+luego, ' doble');
+  // segunda fila: lo demás
+  h += botonWA(c);
+  if(activa && c.estado !== 'completada') h += btnAcc('mover', 'Mover', 'modalMover(\''+id+'\')');
+  if(c.estado === 'pendiente') h += btnAcc('durar', 'Ajustar duración', 'modalDuracion(\''+id+'\')');
+  if(c.estado !== 'pendiente' && c.estado !== 'apartada') h += btnAcc('borrar', 'Eliminar', 'eliminarCita(\''+id+'\')'+luego);
   return h;
 }
 
@@ -2727,10 +2894,12 @@ function cuenta(hasta){
 }
 
 function encCita(c, extra){
-  return '<div class="cita-enc"><div class="h">'+hora12(aMin(c.hora)).replace(' ','<span style="font-size:10.5px;letter-spacing:.06em"> ')+'</span></div>'+
+  const d = deYMD(c.fecha), ini = aMin(c.hora), fin = ini + c.duracion;
+  const hoja = '<div class="cita-hoja" aria-hidden="true"><span>'+DIAS_C[d.getUTCDay()]+'</span><b>'+d.getUTCDate()+'</b><span>'+MESES[d.getUTCMonth()].slice(0,3)+'</span></div>';
+  return '<div class="cita-enc">'+hoja+
     '<div style="flex:1;min-width:0"><div class="nm">'+esc(c.cliente.nombre)+'</div>'+
-    '<div class="sub"><span class="pro-tag" style="--c:'+esc(colorProf(c.prof))+'">'+esc(nombreProf(c.prof))+'</span> '+
-      fechaCorta(c.fecha)+', '+dur(c.duracion)+', '+(c.origen==='manual'?'a mano':'por el link')+'</div></div>'+
+    '<div class="cita-rango">'+hora12(ini).replace(/ [ap]\.m\./, m => (hora12(ini).slice(-4) === hora12(fin).slice(-4) ? '' : m))+' a '+hora12(fin)+'</div>'+
+    '<div class="sub">'+dur(c.duracion)+'<span class="origen">'+(c.origen==='manual'?'A mano':'Por el link')+'</span></div></div>'+
     '<div class="lado"><span class="est '+c.estado+'">'+etiqueta(c.estado)+'</span>'+
       (fueraDeHorario(c) ? '<span class="tag aviso" title="Su horario cambió después de agendarla">fuera de horario</span>' : '')+
       (extra||'')+'</div></div>';
@@ -2766,21 +2935,34 @@ function textoWA(c, llaveFija){
     deposito:col(c.deposito),
     resta:col(resta),
     sinpe:S.config.sinpe,
-    extras:tieneConsulta(c) ? ' El precio de los extras se confirma con tu manicurista.' : '',
+    extras:tieneConsulta(c) ? '\nLos extras se cotizan aparte con tu manicurista.' : '',
+    fin:hora12(aMin(c.hora) + c.duracion),
+    instagram:S.config.instagram,
+    depositoNota:c.deposito > 0 ? '\n\nSobre el depósito de '+col(c.deposito)+', respondenos por aquí y lo coordinamos.' : '',
     antes:c.aviso ? fechaLarga(c.aviso.fecha).toLowerCase()+' a las '+hora12(aMin(c.aviso.hora)) : ''
   };
   // sin depósito se usan las plantillas que no lo mencionan
-  const llave = llaveFija || ((!c.deposito && MENSAJES_WA[c.estado+'Sin']) ? c.estado+'Sin' : c.estado);
+  const llave = llaveSugerida(c, llaveFija);
   const plantilla = MENSAJES_WA[llave] || MENSAJES_WA.otro;
   return plantilla
     .replace(/\{(\w+)\}/g, (m,k) => datos[k] !== undefined ? datos[k] : m)
     .replace(/\.\.(?!\.)/g, '.')         // "a las 11:30 a.m.." -> "a las 11:30 a.m."
     .replace(/las 1:(\d\d)/g, 'la 1:$1'); // "a las 1:00 p.m." -> "a la 1:00 p.m."
 }
+/* Qué mensaje toca según cómo está la cita (sin depósito, las versiones "Sin") */
+function llaveSugerida(c, llaveFija){
+  let llave = llaveFija;
+  if(!llave){
+    llave = c.estado;
+    // confirmada y es hoy o mañana: lo que sirve es el recordatorio
+    if(c.estado === 'aprobada' && (c.fecha === hoyCR() || c.fecha === sumarDias(hoyCR(), 1))) llave = 'recordatorio';
+  }
+  if(!c.deposito && MENSAJES_WA[llave+'Sin']) llave += 'Sin';
+  return MENSAJES_WA[llave] ? llave : 'otro';
+}
+/* WhatsApp: abre la ventana con el mensaje ya escrito, para revisarlo antes de mandarlo */
 function botonWA(c){
-  const url = waCliente(c);
-  if(!url) return '';                               // sin teléfono, sin botón
-  return '<a class="mini w" href="'+url+'" target="_blank" rel="noopener">'+ICO.wa+'WhatsApp</a>';
+  return '<button class="acc-b wa" onclick="modalMensaje(\''+c.id+'\')">'+ICO.wa+'<span>WhatsApp</span></button>';
 }
 
 function etiqueta(e){
@@ -2815,8 +2997,11 @@ function detalleCita(c){
     // sin depósito no se muestra una fila en ₡0: solo cuando el depósito está encendido
     if(S.config.pideDeposito) h += '<div class="lin sub"><span>'+(c.origen==='manual'?'Cita a mano, sin depósito':'Sin depósito')+'</span><span class="v">'+col(0)+'</span></div>';
   }
-  h += '<div class="sep"></div><div class="nota">'+esc(c.cliente.tel||'sin teléfono')+
-       (c.cliente.email?'<br>'+esc(c.cliente.email):'')+'</div>';
+  const tel = soloDigitos(c.cliente.tel);
+  h += '<div class="contacto">'+
+    (tel ? '<a href="tel:+'+(tel.length === 8 ? '506'+tel : tel)+'">'+ICO_ACC.tel+'<span>'+esc(c.cliente.tel)+'</span></a>' : '<span class="nota">Sin teléfono</span>')+
+    (c.cliente.email ? '<a href="mailto:'+esc(c.cliente.email)+'">'+ICO_ACC.correo+'<span>'+esc(c.cliente.email)+'</span></a>' : '')+
+  '</div>';
   h += histHTML(c);
   return h+'</div>';
 }
@@ -2844,11 +3029,7 @@ function tabSolicitudes(){
     }else{
       h += '<div class="nota" style="margin-top:10px">Reservó por el link. El horario queda bloqueado hasta que la apruebes o la rechaces.</div>';
     }
-    h += '<div class="acc">'+botonWA(c)+
-         '<button class="mini" onclick="modalMover(\''+c.id+'\')">Mover</button>'+
-         '<button class="mini" onclick="modalDuracion(\''+c.id+'\')">Ajustar duración</button>'+
-         '<button class="mini g" onclick="aprobar(\''+c.id+'\')">Aprobar</button>'+
-         '<button class="mini r" onclick="rechazar(\''+c.id+'\')">Rechazar</button></div>';
+    h += '<div class="acc">'+accionesCita(c, false)+'</div>';
     h += '</div>';
   }
   h += '</div>';
@@ -2862,9 +3043,7 @@ function tabSolicitudes(){
       const extra = '<div class="reloj" style="padding:7px 10px;gap:8px"><div><div class="t" style="font-size:18px" data-cuenta="'+c.id+'">'+cuenta(c.apartadoHasta)+'</div></div></div>';
       h += abreCita(c,'urg')+encCita(c, extra)+detalleCita(c)+
         '<div class="nota" style="margin-top:10px">Si no llega el comprobante, el espacio se libera solo y vuelve a estar disponible.</div>'+
-        '<div class="acc">'+botonWA(c)+
-        '<button class="mini" onclick="modalMover(\''+c.id+'\')">Mover</button>'+
-        '<button class="mini r" onclick="liberar(\''+c.id+'\')">Liberar ahora</button></div></div>';
+        '<div class="acc">'+accionesCita(c, false)+'</div></div>';
     }
     h += '</div>';
   }
@@ -2942,15 +3121,18 @@ function confirmarDuracion(){
   c.duracion = z.min;
   registrar(c, 'Ajustó la duración de '+dur(antes)+' a '+dur(z.min));
   guardar(); cerrarModal(); aviso('Duración guardada'); pintar();
+  ofrecerMensaje(c.id, 'duracion', 'Duración ajustada: avisale');
 }
-function aprobar(id){ const c=S.citas.find(x=>x.id===id); if(!c) return; c.estado='aprobada'; registrar(c,'Aprobada'); guardar(); aviso('Cita confirmada'); pintar(); }
+function aprobar(id){ const c=S.citas.find(x=>x.id===id); if(!c) return; c.estado='aprobada'; registrar(c,'Aprobada'); guardar(); aviso('Cita confirmada'); pintar(); ofrecerMensaje(id, 'aprobada', 'Cita confirmada: avisale'); }
 function rechazar(id){
   const c=S.citas.find(x=>x.id===id); if(!c) return;
   c.estado='rechazada'; registrar(c,'Rechazada'); guardar(); aviso('Rechazada, el espacio quedó libre'); pintar();
+  ofrecerMensaje(id, 'rechazada', 'Solicitud rechazada: avisale');
 }
 function liberar(id){
   const c=S.citas.find(x=>x.id===id); if(!c) return;
   c.estado='expirada'; registrar(c,'Apartado liberado'); guardar(); aviso('Espacio liberado'); pintar();
+  ofrecerMensaje(id, 'expirada', 'Espacio liberado: avisale');
 }
 
 /* --- Agenda: con "Todas", una columna por profesional --- */
@@ -3130,6 +3312,7 @@ function moverDiaAdmin(n){ V.admin.fecha = sumarDias(V.admin.fecha||hoyCR(), n);
 function completar(id){
   const c=S.citas.find(x=>x.id===id); if(!c) return;
   c.estado='completada'; c.completada=Date.now(); registrar(c,'Marcada completada'); guardar(); aviso('Sumada a ingresos'); pintar();
+  ofrecerMensaje(id, 'completada', 'Listo: ¿le agradecés?');
 }
 /* Cancelar: la cita queda en el historial pero libera el espacio y deja de contar en Ingresos */
 function cancelar(id){
@@ -3139,6 +3322,7 @@ function cancelar(id){
     (eraCompletada ? 'Ya estaba completada: deja de contar en Ingresos.' : 'El espacio queda libre en la agenda.'))) return;
   c.estado='cancelada'; registrar(c, eraCompletada ? 'Cancelada (estaba completada, sale de Ingresos)' : 'Cancelada');
   guardar(); aviso('Cita cancelada'); pintar();
+  if(!eraCompletada) ofrecerMensaje(id, 'cancelada', 'Cita cancelada: avisale');
 }
 /* Eliminar: se borra del todo (agenda e ingresos). Queda anotado en "Últimos cambios". */
 function eliminarCita(id){
@@ -3252,6 +3436,63 @@ function modalAvisoCambio(id, recien){
     '<button class="mini r" onclick="cerrarModal()">Ahora no</button></div>';
   modal(h);
 }
+/* ------------------------------------------------------------
+   Mensaje para la clienta. Cada acción que la afecta abre esta
+   ventana con el texto listo; se puede elegir otro, retocarlo,
+   mandarlo por WhatsApp o copiarlo.
+   ------------------------------------------------------------ */
+function msgsPara(c){
+  const l = ['otro'];
+  if(c.estado === 'apartada') l.unshift('apartada');
+  if(c.estado === 'pendiente') l.unshift(c.deposito ? 'pendiente' : 'pendienteSin');
+  if(c.estado === 'aprobada') l.unshift('aprobada', 'recordatorio', 'duracion');
+  if(c.estado === 'rechazada') l.unshift('rechazada');
+  if(c.estado === 'cancelada') l.unshift('cancelada');
+  if(c.estado === 'expirada') l.unshift('expirada');
+  if(c.estado === 'completada') l.unshift('completada');
+  if(c.aviso && !['rechazada','cancelada','expirada','completada'].includes(c.estado)) l.splice(l.length-1, 0, 'movida');
+  return l;
+}
+function modalMensaje(id, llave, titulo){
+  const c = S.citas.find(x=>x.id===id); if(!c) return;
+  const elegida = llaveSugerida(c, llave);
+  V._msg = {id, llave:elegida};
+  const nombre = (c.cliente.nombre||'').split(' ')[0] || 'la clienta';
+  let h = '<div class="modal-enc"><div><h3>'+esc(titulo || 'Mensaje para '+nombre)+'</h3>'+
+    '<div class="nota">'+esc(c.cliente.nombre)+(c.cliente.tel ? ', '+esc(c.cliente.tel) : '')+'</div></div>'+
+    '<button class="x" onclick="cerrarModal()" aria-label="Cerrar">×</button></div>';
+  h += '<div class="chips msg-tipos" role="radiogroup" aria-label="Tipo de mensaje">';
+  for(const k of msgsPara(c)){
+    const kk = llaveSugerida(c, k);
+    h += '<button class="chip'+(kk===elegida?' on':'')+'" role="radio" aria-checked="'+(kk===elegida)+'" onclick="modalMensaje(\''+id+'\',\''+k+'\','+(titulo?'\''+esc(titulo).replace(/'/g,'')+'\'':'null')+')">'+NOMBRE_MSG[kk]+'</button>';
+  }
+  h += '</div>';
+  h += '<div class="campo" style="margin:12px 0"><label for="msg-txt">Mensaje</label>'+
+    '<textarea class="inp msg-cambio" id="msg-txt" rows="10">'+esc(textoWA(c, elegida.replace(/Sin$/,'')))+'</textarea>'+
+    '<div class="nota" style="margin-top:6px">Lo podés ajustar antes de mandarlo.</div></div>';
+  if(telWA(c)) h += '<button class="btn wa" onclick="enviarMensaje()">'+ICO.wa+'Enviar por WhatsApp</button>';
+  else h += '<div class="nota-caja" style="margin-bottom:10px">Esta cita no tiene teléfono. Copiá el mensaje y mandalo por donde la contactés.</div>';
+  h += '<div class="acc-modal"><button class="mini" onclick="copiarMensaje()">Copiar mensaje</button>'+
+    '<button class="mini r" onclick="cerrarModal()">Ahora no</button></div>';
+  modal(h);
+}
+function enviarMensaje(){
+  const m = V._msg, c = m && S.citas.find(x=>x.id===m.id); if(!c) return;
+  const texto = (document.getElementById('msg-txt')||{}).value || textoWA(c, m.llave);
+  window.open('https://wa.me/'+telWA(c)+'?text='+encodeURIComponent(texto), '_blank');
+  if(m.llave === 'movida' && c.aviso) c.aviso.enviado = true;
+  registrar(c, 'Le escribió por WhatsApp: '+NOMBRE_MSG[m.llave].toLowerCase());
+  guardar(); cerrarModal(); aviso('Mensaje listo en WhatsApp'); pintar();
+}
+function copiarMensaje(){
+  const m = V._msg, c = m && S.citas.find(x=>x.id===m.id); if(!c) return;
+  copiar((document.getElementById('msg-txt')||{}).value || textoWA(c, m.llave), 'Mensaje copiado');
+  if(m.llave === 'movida' && c.aviso) c.aviso.enviado = true;
+  guardar();
+}
+/* Después de una acción: el mensaje se ofrece enseguida (después de que se repinte lo de atrás) */
+const ofrecerMensaje = (id, llave, titulo) => setTimeout(() => modalMensaje(id, llave, titulo), 0);
+
 function enviarAvisoCambio(id){
   const c = S.citas.find(x=>x.id===id); if(!c) return;
   const texto = (document.getElementById('msg-cambio')||{}).value || textoWA(c, 'movida');
@@ -3301,7 +3542,6 @@ function pintarManual(){
     '<div class="nota">Queda confirmada de una, sin pedir depósito.</div></div>'+
     '<button class="x" onclick="cerrarModal()">×</button></div>';
 
-  if(profsActivas().length > 1) h += '<div class="campo"><label>Con quién</label>'+chipsPro(m.prof, 'manPro', profsActivas())+'</div>';
 
   h += '<div class="campo"><label>Servicio</label><div class="chips">';
   for(const s of S.servicios.filter(x => hace(pr, x))){
@@ -3389,9 +3629,8 @@ function tabConfig(){
   /* Horario de la profesional elegida: semana normal, excepciones y pausas puntuales */
   h += '<div class="rot">Horario de '+esc(pc.nombre)+'</div>';
   h += '<div class="card">';
-  h += '<div class="nota" style="margin-bottom:10px">Cada una arma su propia semana. Cambiar la de una no toca la de la otra. '+
+  h += '<div class="nota" style="margin-bottom:10px">Tu semana de trabajo. Cambiarla no toca la de la otra. '+
     'Las horas van cada 15 minutos.</div>';
-  h += chipsPro(pc.id, 'cfgPro', S.profesionales);
   h += '<div class="mini-et" style="margin-top:16px;color:var(--acento)">Semana normal</div>';
   for(let d=1;d<=7;d++){
     const i = d%7;                                   // lunes primero, domingo al final
@@ -3890,10 +4129,10 @@ function tabIngresos(){
     h += '</div>';
   }
 
-  /* Por profesional: siempre se ven todas, para comparar */
+  /* Por profesional: solo sin una profesional elegida (con agendas separadas, cada una ve lo suyo) */
   const todasPer = entre(S.citas.filter(c=>c.estado==='completada'), desde, hasta);
   const totPer = sum(todasPer);
-  if(todasPer.length){
+  if(V.admin.prof === 'todas' && todasPer.length){
     h += '<div class="rot">Por profesional</div><div class="card">';
     for(const p of S.profesionales){
       const suyas = todasPer.filter(c=>c.prof===p.id);
