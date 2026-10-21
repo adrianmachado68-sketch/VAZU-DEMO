@@ -2477,8 +2477,11 @@ const ICO_PANEL = {
   config:'<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>',
   salir:'<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5H6v14h8"/><path d="M11 12h9M17 9l3 3-3 3"/></svg>'
 };
-/* Citas que esperan una decisión: por confirmar, o apartadas esperando el depósito */
-const porConfirmar = () => S.citas.filter(c => c.estado === 'pendiente' || (c.estado === 'apartada' && bloquea(c)));
+/* Citas que esperan una decisión: por confirmar, o apartadas esperando el depósito.
+   Cada profesional ve solo las suyas (campanita y menú): las de la otra las ve ella en su perfil. */
+const porConfirmar = () => S.citas.filter(c =>
+  (c.estado === 'pendiente' || (c.estado === 'apartada' && bloquea(c))) &&
+  (!V.admin.yo || c.prof === V.admin.yo));
 
 function verAdmin(){
   const n = porConfirmar().length;
@@ -2531,8 +2534,9 @@ function abrirMenu(){
 /* Campanita: las citas que esperan una decisión, con las acciones a mano */
 function verPendientes(){
   const lista = porConfirmar().sort((a,b) => (a.fecha+a.hora).localeCompare(b.fecha+b.hora));
-  let h = '<div class="modal-enc"><div><h3>Por confirmar</h3><div class="nota">'+
-    (lista.length ? lista.length+' cita'+(lista.length>1?'s esperan':' espera')+' una respuesta.' : 'Todo al día.')+'</div></div>'+
+  const de = V.admin.yo ? ' de '+esc(quienSoy()) : '';
+  let h = '<div class="modal-enc"><div><h3>Por confirmar'+de+'</h3><div class="nota">'+
+    (lista.length ? lista.length+' cita'+(lista.length>1?'s esperan':' espera')+' tu respuesta.' : 'Todo al día.')+'</div></div>'+
     '<button class="x" onclick="cerrarModal()" aria-label="Cerrar">×</button></div>';
   if(!lista.length) h += '<p class="vacio-mini">No hay citas por confirmar.</p>';
   for(const c of lista){
