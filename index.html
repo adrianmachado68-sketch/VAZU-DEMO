@@ -306,6 +306,19 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xm
 .vista{flex:1;border:0;background:transparent;border-radius:26px;padding:8px 6px;font-size:12.5px;letter-spacing:.04em;color:var(--lectura)}
 .vista.on{background:var(--oliva-prof);color:#fff}
 .vistas .mini{margin-left:auto}
+/* selector de fecha */
+.fecha-btn{gap:7px;min-height:38px;padding:7px 12px;text-transform:none;letter-spacing:.01em;font-size:12.5px;color:var(--texto);white-space:nowrap}
+.fecha-btn svg{width:15px;height:15px;color:var(--oliva-prof)}
+.fecha-atajos{display:flex;gap:8px;flex-wrap:wrap}
+.fecha-atajos .chip{min-height:38px}
+.fcal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px}
+.fcal-dow{text-align:center;font-size:10px;letter-spacing:.14em;color:var(--tenue);padding:4px 0}
+.fcal-dia{position:relative;height:42px;border:1px solid transparent;border-radius:10px;background:#fff;font-size:14px;color:var(--texto);font-variant-numeric:tabular-nums}
+.fcal-dia i{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--oliva-osc)}
+.fcal-dia.hoy{border-color:var(--oliva-osc)}
+.fcal-dia.sel{background:var(--oliva-prof);color:#fff}
+.fcal-dia.sel i{background:#fff}
+@media(hover:hover){ .fcal-dia:not(.sel):hover{border-color:var(--oliva)} }
 
 /* semana: siete columnas en pantalla ancha, una lista en celular */
 .semana{display:grid;gap:8px}
@@ -2422,6 +2435,8 @@ function elegirYo(){
 }
 function soy(id){
   V.admin.yo = id;
+  // cada una arranca viendo su propia agenda; "Todas" y la otra quedan a un toque
+  if(S.profesionales.length > 1) V.admin.prof = id;
   cerrarModal();
   if(V.pantalla !== 'admin'){ V.admin.fecha = hoyCR(); V.pantalla = 'admin'; window.scrollTo(0,0); }
   aviso('Panel de '+nombreProf(id));
@@ -2833,13 +2848,44 @@ function tabAgenda(){
   for(const [k,n] of VISTAS){
     h += '<button class="vista'+(vista===k?' on':'')+'" role="tab" aria-selected="'+(vista===k)+'" onclick="verVista(\''+k+'\')">'+n+'</button>';
   }
-  h += '</div><button class="mini" onclick="irHoy()">Hoy</button></div>';
+  // selector de fecha: muestra la fecha que estás viendo y abre un menú para saltar a cualquier día
+  h += '</div><button class="mini fecha-btn" onclick="modalFecha()" aria-haspopup="dialog" aria-label="Elegir una fecha. Ahora: '+capital(fechaLarga(f))+'">'+
+    ICO_PANEL.agenda+'<span>'+(f === hoyCR() ? 'Hoy' : capital(fechaCorta(f)))+'</span></button></div>';
   if(vista === 'semana') return h + agendaSemana(f);
   if(vista === 'mes')    return h + agendaMes(f);
   return h + agendaDia(f);
 }
 function verVista(v){ V.admin.vista = v; pintar(); }
 function irHoy(){ V.admin.fecha = hoyCR(); pintar(); }
+function irFecha(f){ V.admin.fecha = f; cerrarModal(); window.scrollTo(0,0); pintar(); }
+
+/* Menú de fecha: atajos y un calendario chico con puntos donde hay citas */
+function modalFecha(ym){
+  const actual = V.admin.fecha || hoyCR(), hoy = hoyCR();
+  const [y, m] = (ym || actual.slice(0,7)).split('-').map(Number);
+  const mesStr = (yy, mm) => { const d = new Date(Date.UTC(yy, mm-1, 1)); return d.toISOString().slice(0,7); };
+  const ant = mesStr(y, m-1), sig = mesStr(y, m+1);
+  const atajos = [['Hoy', hoy], ['Mañana', sumarDias(hoy,1)], ['En una semana', sumarDias(hoy,7)]];
+  let h = '<div class="modal-enc"><div><h3>Ir a una fecha</h3><div class="nota">Viendo: '+capital(fechaLarga(actual))+'</div></div>'+
+    '<button class="x" onclick="cerrarModal()" aria-label="Cerrar">×</button></div>';
+  h += '<div class="fecha-atajos">'+atajos.map(([t,f]) =>
+    '<button class="chip'+(f===actual?' on':'')+'" onclick="irFecha(\''+f+'\')">'+t+'</button>').join('')+'</div>';
+  h += '<div class="cal-enc" style="margin:14px 0 6px">'+
+    '<button class="flecha" onclick="modalFecha(\''+ant+'\')" aria-label="Mes anterior">'+ICO.flechaI+'</button>'+
+    '<h3 style="font-size:16px">'+capital(MESES[m-1])+' '+y+'</h3>'+
+    '<button class="flecha" onclick="modalFecha(\''+sig+'\')" aria-label="Mes siguiente">'+ICO.flechaD+'</button></div>';
+  const primero = new Date(Date.UTC(y, m-1, 1)), dias = new Date(Date.UTC(y, m, 0)).getUTCDate(), desfase = (primero.getUTCDay()+6)%7;
+  h += '<div class="fcal">';
+  for(const d of ['L','M','M','J','V','S','D']) h += '<span class="fcal-dow">'+d+'</span>';
+  for(let i=0;i<desfase;i++) h += '<span></span>';
+  for(let n=1;n<=dias;n++){
+    const f = y+'-'+String(m).padStart(2,'0')+'-'+String(n).padStart(2,'0');
+    const hay = citasDelDia(f).length;
+    h += '<button class="fcal-dia'+(f===actual?' sel':'')+(f===hoy?' hoy':'')+'" onclick="irFecha(\''+f+'\')" '+
+      'aria-label="'+capital(fechaLarga(f))+(hay ? ', '+hay+' cita'+(hay>1?'s':'') : '')+'">'+n+(hay ? '<i></i>' : '')+'</button>';
+  }
+  modal(h+'</div>');
+}
 function abrirDia(f){ V.admin.fecha = f; V.admin.vista = 'dia'; window.scrollTo(0,0); pintar(); }
 function moverPeriodo(n){
   const v = V.admin.vista || 'dia', f = V.admin.fecha || hoyCR();
