@@ -206,6 +206,8 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xm
 .lin{display:flex;gap:12px;font-size:13.5px;padding:5px 0}
 .lin .v{margin-left:auto;white-space:nowrap;letter-spacing:.02em}
 .lin.sub{font-size:12px;color:var(--lectura)}
+.lin .incluye,.v-lin .v-incluye{display:block;font-size:12px;color:var(--lectura,#6B6C5C);margin-top:1px}
+.v-lin .v-incluye{color:var(--gris)}
 .lin.tot{font-size:15px;padding-top:11px;margin-top:6px;border-top:1px solid var(--linea)}
 .lin.tot .v{font-family:var(--disp);font-size:19px;font-weight:400}
 
@@ -1068,6 +1070,11 @@ body.pub .v-top-btn{width:auto;min-height:38px;margin-left:auto;padding:7px 20px
 .v-top-nav::-webkit-scrollbar{display:none}
 .v-top-nav button{background:none;border:0;padding:12px 0 10px;font-size:16px;color:var(--gris);border-bottom:2px solid transparent;white-space:nowrap}
 .v-top-nav button.on{color:var(--tinta);border-bottom-color:var(--accion)}
+/* celular: la fila del logo con aire arriba y abajo; Reservar centrado con el logo y alineado al margen */
+@media(max-width:999px){
+  body.pub button.v-top-marca{padding:16px 0}
+  body.pub .v-top-btn{min-height:40px;padding:8px 18px}
+}
 .v-triptico{display:none}
 .v-inicio .v-triptico{display:grid;grid-template-columns:1fr 1.3fr 1fr;align-items:start}
 .v-tri-foto{height:var(--alto-tri);overflow:hidden}
@@ -1501,6 +1508,16 @@ function profsPara(ids){
    Las usan la reserva de la clienta y la cita manual del panel.
    ------------------------------------------------------------ */
 const nomCorto = s => nomServ(s);   // los nombres van tal cual están en su menú ("Gel X", no "gel X")
+/* Lo que un servicio ya trae incluido (por ejemplo, Gel X incluye manicure ruso), en minúscula para ir dentro de una frase */
+const minInicial = t => t.charAt(0).toLowerCase() + t.slice(1);
+function incluidos(s){
+  const b = servicio(s.id);
+  // "Esmaltado semipermanente (Pies)" se dice "esmaltado semipermanente de pies", sin paréntesis dentro de paréntesis
+  return ((b && b.incluye) || []).map(servicio).filter(Boolean)
+    .map(x => minInicial(nomCorto(x)).replace(/ \(([^)]+)\)$/, (m, g) => ' de '+g.toLowerCase()));
+}
+const incluyeTxt = s => { const l = incluidos(s); return l.length ? 'Incluye '+l.join(' y ') : ''; };
+const conIncluye = s => { const l = incluidos(s); return nomServ(s) + (l.length ? ' (incluye '+l.join(' y ')+')' : ''); };
 /* Por qué no se puede sumar este servicio a lo elegido (null si se puede) */
 function motivoBloqueo(id, sel){
   const s = servicio(id); if(!s) return null;
@@ -2507,7 +2524,7 @@ function tuCita(){
   let h = '<section class="v-tu-cita" aria-label="Tu cita">';
   if(V.fecha && V.hora != null) h += fila('Cuándo', capital(fechaLarga(V.fecha))+', '+hora12(V.hora)+' a '+hora12(V.hora + t.minutos), 3);
   if(quien && profsActivas().length > 1) h += fila('Con', esc(nombreProf(quien)), 1);
-  h += fila('Qué', esc(V.sel.map(servicio).filter(Boolean).map(nomServ).join(' + ')), 2);
+  h += fila('Qué', esc(V.sel.map(servicio).filter(Boolean).map(conIncluye).join(' + ')), 2);
   h += '<div class="v-tc-total"><span>'+dur(t.minutos)+'</span><span class="v-num">'+col(t.precio)+(t.consultar?' + extras':'')+'</span></div>';
   return h+'</section>';
 }
@@ -2525,7 +2542,8 @@ function resumenCita(c, conFecha){
     h += '<div class="v-res-cab"><span>'+capital(fechaLarga(c.fecha))+'</span><span class="v-num">'+hora12(aMin(c.hora))+'</span></div>'+
       '<p class="v-con v-res-con">'+punto(colorProf(c.prof))+'Con '+esc(nombreProf(c.prof))+'</p>';
   }
-  for(const s of c.servicios) h += '<div class="v-lin"><span>'+esc(nomServ(s))+'</span><span class="v-num">'+col(s.precio)+'</span></div>';
+  for(const s of c.servicios) h += '<div class="v-lin"><span>'+esc(nomServ(s))+
+    (incluyeTxt(s) ? '<span class="v-incluye">'+esc(incluyeTxt(s))+'</span>' : '')+'</span><span class="v-num">'+col(s.precio)+'</span></div>';
   for(const a of (c.adicionales||[])) h += '<div class="v-lin"><span>'+esc(a.nombre)+(a.cant>1?' × '+a.cant:'')+'</span><span class="v-num">'+capital(precioAdic(a))+'</span></div>';
   if(c.nivel) h += '<div class="v-lin sub"><span>'+esc(c.nivel.n)+'</span><span class="v-num">'+(c.nivel.suma ? 'suma '+dur(c.nivel.suma) : 'sin tiempo extra')+'</span></div>';
   if(c.refDisenio) h += '<div class="v-ref"><img src="'+c.refDisenio+'" alt="Tu foto de referencia"><span class="v-meta">Tu foto de referencia</span></div>';
@@ -2788,7 +2806,7 @@ function abrirWhatsApp(id){
   l.push('Día: '+capital(fechaLarga(c.fecha)));
   l.push('Hora: '+hora12(aMin(c.hora)));
   l.push('Con: '+nombreProf(c.prof));
-  l.push('Servicio: '+c.servicios.map(nomServ).join(' + '));
+  l.push('Servicio: '+c.servicios.map(conIncluye).join(' + '));
   if(c.adicionales && c.adicionales.length) l.push('Extras: '+c.adicionales.map(a=>a.nombre+(a.precio==null?' (a consultar)':'')).join(', '));
   if(c.nivel) l.push('Diseño: '+c.nivel.n.toLowerCase());
   if(c.disenio) l.push('Detalle del diseño: '+c.disenio);
@@ -3080,7 +3098,7 @@ function textoWA(c, llaveFija){
     profesional:nombreProf(c.prof),
     dia:fechaLarga(c.fecha).toLowerCase(),
     hora:hora12(aMin(c.hora)),
-    servicios:c.servicios.map(nomServ).join(' + ').toLowerCase(),
+    servicios:c.servicios.map(conIncluye).join(' + '),
     duracion:dur(c.duracion),
     total:col(c.total),
     deposito:col(c.deposito),
@@ -3127,7 +3145,8 @@ function detalleCita(c){
     h += '<div class="aviso-cambio"><span>Se movió y falta avisarle a '+esc((c.cliente.nombre||'').split(' ')[0])+'.</span>'+
       '<button class="mini" onclick="modalAvisoCambio(\''+c.id+'\')">Avisar del cambio</button></div>';
   }
-  for(const s of c.servicios) h += '<div class="lin"><span>'+esc(nomServ(s))+'</span><span class="v">'+col(s.precio)+'</span></div>';
+  for(const s of c.servicios) h += '<div class="lin"><span>'+esc(nomServ(s))+
+    (incluyeTxt(s) ? '<span class="incluye">'+esc(incluyeTxt(s))+'</span>' : '')+'</span><span class="v">'+col(s.precio)+'</span></div>';
   for(const a of (c.adicionales||[])) h += '<div class="lin sub"><span>'+esc(a.nombre)+(a.cant>1?' × '+a.cant:'')+'</span><span class="v">'+precioAdic(a)+'</span></div>';
   if(c.disenio) h += '<div class="nota" style="margin:2px 0 6px">Diseño que pidió: '+esc(c.disenio)+'</div>';
   if(c.nivel) h += '<div class="lin sub"><span>Nivel de diseño: '+esc(c.nivel.n)+'</span><span class="v">'+(c.nivel.suma ? '+'+dur(c.nivel.suma) : 'sin tiempo extra')+'</span></div>';
