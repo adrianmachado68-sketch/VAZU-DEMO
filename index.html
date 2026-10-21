@@ -458,7 +458,11 @@ button.ing-fila:hover .v{color:var(--oliva-prof)}
 .hoja-modal h3{font-size:22px;font-weight:400;margin-bottom:4px}
 .hoja-modal .cerrar{position:absolute;top:0;right:0}
 .modal-enc{display:flex;align-items:flex-start;margin-bottom:16px}
-.modal-enc .x{margin-left:auto;border:0;background:transparent;color:var(--tenue);font-size:22px;line-height:1;padding:0 2px}
+.modal-enc .x{margin:-10px -12px 0 auto;border:0;background:transparent;color:var(--tenue);font-size:26px;line-height:1;padding:0;
+  min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;flex:none}
+/* el encabezado de la ventana (con la ×) queda fijo arriba aunque se baje */
+.hoja-modal .modal-enc{position:sticky;top:-22px;z-index:2;background:inherit;margin-top:-22px;padding-top:22px}
+.img-ventana{display:block;width:100%;max-height:62vh;object-fit:contain;border-radius:4px;background:#EFEFEA}
 .chips{display:flex;gap:7px;flex-wrap:wrap}
 .chip{border:1px solid var(--linea);background:#fff;border-radius:30px;padding:9px 13px;font-size:12.5px;color:var(--texto)}
 .chip.on{background:var(--oliva-prof);color:#fff;border-color:var(--oliva-prof)}
@@ -1898,9 +1902,9 @@ function verFotoServ(id){
   const s = S.servicios.find(x => x.id === id) || S.adicionales.find(x => x.id === id);
   if(!s || !s.foto) return;
   const enReserva = V.pantalla === 'reserva';
-  modal('<div class="modal-enc"><div><h3>'+esc(s.nombre)+'</h3><div class="nota">Un trabajo de VAZÚ</div></div>'+
+  modalFoto('<div class="modal-enc"><div><h3>'+esc(s.nombre)+'</h3><div class="nota">Un trabajo de VAZÚ</div></div>'+
     '<button class="x" onclick="cerrarModal()" aria-label="Cerrar">×</button></div>'+
-    '<img src="'+encodeURI(s.foto)+'" alt="'+esc(s.nombre)+'" style="width:100%;max-height:70vh;object-fit:contain;border-radius:2px;display:block;background:#EFEFEA">'+
+    imgVentana(encodeURI(s.foto), s.nombre)+
     '<div style="height:12px"></div>'+
     (enReserva ? '<button class="v-btn sec" onclick="cerrarModal()">Volver al menú</button>'
                : '<button class="v-btn" onclick="cerrarModal();irReserva()">Reservar</button>'));
@@ -2040,9 +2044,9 @@ function irA(id){
 }
 function verFoto(i){
   const g = GALERIA[i];
-  modal('<div class="modal-enc"><div><h3>Trabajo de VAZÚ</h3><div class="nota">'+esc(g.alt)+'</div></div>'+
+  modalFoto('<div class="modal-enc"><div><h3>Trabajo de VAZÚ</h3><div class="nota">'+esc(g.alt)+'</div></div>'+
     '<button class="x" onclick="cerrarModal()" aria-label="Cerrar">×</button></div>'+
-    '<img src="'+encodeURI(g.img)+'" alt="'+esc(g.alt)+'" style="width:100%;border-radius:2px;display:block">'+
+    imgVentana(encodeURI(g.img), g.alt)+
     '<div style="height:12px"></div><button class="btn" onclick="cerrarModal();irReserva()">Reservar</button>');
 }
 function irReserva(){
@@ -2110,7 +2114,25 @@ function modal(html){
   document.getElementById('capa-modal').innerHTML =
     '<div class="velo" onclick="if(event.target===this)cerrarModal()"><div class="hoja-modal">'+html+'</div></div>';
 }
-function cerrarModal(){ document.getElementById('capa-modal').innerHTML=''; }
+/* Las ventanas de foto se cierran con la ×, tocando afuera, con Escape o con el botón
+   "atrás" del celular (que si no, sacaría de la página). */
+let fotoAbierta = false;
+function modalFoto(html){
+  modal(html);
+  if(!fotoAbierta){ fotoAbierta = true; try{ history.pushState({foto:1}, ''); }catch(e){} }
+}
+function cerrarModal(){
+  document.getElementById('capa-modal').innerHTML='';
+  if(fotoAbierta){ fotoAbierta = false; try{ history.back(); }catch(e){} }
+}
+addEventListener('popstate', () => {
+  if(fotoAbierta){ fotoAbierta = false; document.getElementById('capa-modal').innerHTML=''; }
+});
+addEventListener('keydown', e => {
+  if(e.key === 'Escape' && document.querySelector('#capa-modal .velo')) cerrarModal();
+});
+/* La foto entra entera en la pantalla (sin que la × quede fuera de vista) */
+const imgVentana = (src, alt) => '<img class="img-ventana" src="'+src+'" alt="'+esc(alt||'')+'">';
 
 /* ============================================================
    6. Pantalla de la clienta — flujo de reserva
@@ -3180,16 +3202,16 @@ function tabSolicitudes(){
 }
 function verCaptura(id){
   const c = S.citas.find(x=>x.id===id); if(!c || !c.captura) return;
-  modal('<div class="modal-enc"><div><h3>Comprobante</h3><div class="nota">'+esc(c.cliente.nombre)+', '+col(c.deposito)+'</div></div>'+
-    '<button class="x" onclick="cerrarModal()">×</button></div>'+
-    '<img src="'+c.captura+'" style="width:100%;border-radius:14px;border:1px solid var(--linea)">');
+  modalFoto('<div class="modal-enc"><div><h3>Comprobante</h3><div class="nota">'+esc(c.cliente.nombre)+', '+col(c.deposito)+'</div></div>'+
+    '<button class="x" onclick="cerrarModal()" aria-label="Cerrar">×</button></div>'+
+    imgVentana(c.captura, 'Captura del comprobante'));
 }
 function verRef(id){
   const c = S.citas.find(x=>x.id===id); if(!c || !c.refDisenio) return;
-  modal('<div class="modal-enc"><div><h3>Foto de referencia</h3><div class="nota">'+esc(c.cliente.nombre)+
+  modalFoto('<div class="modal-enc"><div><h3>Foto de referencia</h3><div class="nota">'+esc(c.cliente.nombre)+
     (c.nivel ? ', '+esc(c.nivel.n.toLowerCase()) : '')+'</div></div>'+
-    '<button class="x" onclick="cerrarModal()">×</button></div>'+
-    '<img src="'+c.refDisenio+'" alt="Foto de referencia del diseño" style="width:100%;border-radius:14px;border:1px solid var(--linea)">');
+    '<button class="x" onclick="cerrarModal()" aria-label="Cerrar">×</button></div>'+
+    imgVentana(c.refDisenio, 'Foto de referencia del diseño'));
 }
 
 /* ------------------------------------------------------------
