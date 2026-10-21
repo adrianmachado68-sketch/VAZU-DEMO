@@ -377,6 +377,26 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xm
 .kpi .k{font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--tenue)}
 .kpi .v{font-family:var(--disp);font-size:18px;margin-top:4px;letter-spacing:.01em}
 .kpi .s{font-size:10.5px;color:var(--tenue)}
+/* ingresos: tarjetas tocables, períodos y filas que llevan al detalle */
+.kpis.cuatro{grid-template-columns:repeat(4,1fr)}
+@media (max-width:560px){ .kpis.cuatro{grid-template-columns:repeat(2,1fr)} }
+button.kpi{text-align:left;font:inherit;color:inherit;width:100%;transition:border-color .15s, box-shadow .15s}
+button.kpi:hover{border-color:var(--linea-fuerte)}
+.kpi.on{border-color:var(--oliva-prof);box-shadow:inset 0 0 0 1px var(--oliva-prof)}
+.kpi.on .k{color:var(--oliva-prof)}
+.ing-otro{display:flex;justify-content:center;margin:10px 0 0}
+.ing-rango{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 0}
+.ing-rango label{flex:1;min-width:130px;display:flex;flex-direction:column;gap:4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--tenue)}
+.ing-rango input{font:inherit;font-size:14px;text-transform:none;letter-spacing:0;color:var(--texto);padding:9px 10px;border:1px solid var(--linea-fuerte);border-radius:var(--r-sm);background:#fff}
+.ing-total{text-align:center;padding:16px 12px}
+.ing-total .v{font-family:var(--disp);font-size:28px;letter-spacing:.01em;margin:2px 0}
+.ing-fila{display:grid;grid-template-columns:minmax(78px,auto) 1fr auto;align-items:center;gap:10px;width:100%;padding:8px 2px;border:0;
+  border-bottom:1px solid var(--linea);background:none;text-align:left;font-size:13.5px}
+.ing-fila:last-child{border-bottom:0}
+.ing-fila .barra-pro{margin:0}
+.ing-fila .v{white-space:nowrap;font-variant-numeric:tabular-nums}
+.ing-fila.cero{color:var(--tenue)}
+button.ing-fila:hover .v{color:var(--oliva-prof)}
 .destacado{background:linear-gradient(160deg,#fff,#F3F3EC 60%,#EAE9DE);border:1px solid var(--linea-fuerte);border-radius:var(--r);padding:20px 18px;text-align:center;box-shadow:var(--sombra)}
 .destacado .v{font-family:var(--disp);font-size:44px;font-weight:200;line-height:1;margin:4px 0 6px}
 
@@ -3636,84 +3656,217 @@ function setCfg(q,v){
   guardar(); aviso('Guardado'); pintar();
 }
 
-/* --- Ingresos: solo citas completadas --- */
+/* --- Ingresos: solo citas completadas ---
+   Se elige un período (día, semana, mes, año o un rango de fechas) y todo el detalle
+   de abajo se calcula para ese período. Las flechas pasan al anterior o al siguiente. */
+const NOMBRE_PER = {dia:'Hoy', semana:'Semana', mes:'Mes', anio:'Año'};
+function estadoIng(){
+  if(!V.admin.ing){
+    const hoy = hoyCR();
+    V.admin.ing = {per:'mes', ref:hoy, desde:hoy.slice(0,8)+'01', hasta:hoy, verTodas:false};
+  }
+  return V.admin.ing;
+}
+const finDeMes = ym => { const [y,m] = ym.split('-').map(Number); return ym+'-'+String(new Date(Date.UTC(y,m,0)).getUTCDate()).padStart(2,'0'); };
+function rangoDe(per, ref){
+  if(per === 'dia')    return [ref, ref];
+  if(per === 'semana'){ const i = inicioSemana(ref); return [i, sumarDias(i,6)]; }
+  if(per === 'mes')    return [ref.slice(0,8)+'01', finDeMes(ref.slice(0,7))];
+  if(per === 'anio')   return [ref.slice(0,4)+'-01-01', ref.slice(0,4)+'-12-31'];
+  const e = estadoIng(); return e.desde <= e.hasta ? [e.desde, e.hasta] : [e.hasta, e.desde];
+}
+function tituloPeriodo(per, ref, desde, hasta){
+  const hoy = hoyCR();
+  if(per === 'dia')  return ref === hoy ? 'Hoy, '+fechaLarga(ref).toLowerCase() : capital(fechaLarga(ref))+(ref.slice(0,4) === hoy.slice(0,4) ? '' : ' de '+ref.slice(0,4));
+  if(per === 'mes')  return capital(MESES[+ref.slice(5,7)-1])+' '+ref.slice(0,4);
+  if(per === 'anio') return 'Año '+ref.slice(0,4);
+  const a = deYMD(desde), b = deYMD(hasta), mismoAnio = a.getUTCFullYear() === b.getUTCFullYear();
+  const izq = a.getUTCDate()+(a.getUTCMonth()===b.getUTCMonth() && mismoAnio ? '' : ' de '+MESES[a.getUTCMonth()])+(mismoAnio ? '' : ' de '+a.getUTCFullYear());
+  return capital(izq+' al '+b.getUTCDate()+' de '+MESES[b.getUTCMonth()]+' de '+b.getUTCFullYear());
+}
+function ingPeriodo(per, ref){
+  const e = estadoIng();
+  e.per = per; e.ref = ref || hoyCR(); e.verTodas = false;
+  pintar();
+}
+function ingMover(n){
+  const e = estadoIng(), d = deYMD(e.ref);
+  if(e.per === 'dia') e.ref = sumarDias(e.ref, n);
+  else if(e.per === 'semana') e.ref = sumarDias(e.ref, 7*n);
+  else if(e.per === 'mes'){ d.setUTCDate(1); d.setUTCMonth(d.getUTCMonth()+n); e.ref = d.toISOString().slice(0,10); }
+  else if(e.per === 'anio'){ d.setUTCDate(1); d.setUTCMonth(0); d.setUTCFullYear(d.getUTCFullYear()+n); e.ref = d.toISOString().slice(0,10); }
+  e.verTodas = false;
+  pintar();
+}
+function ingRango(campo, valor){
+  const e = estadoIng();
+  if(valor) e[campo] = valor;
+  e.per = 'rango'; e.verTodas = false;
+  pintar();
+}
+function ingVerTodas(){ estadoIng().verTodas = true; pintar(); }
+
 function tabIngresos(){
-  const hoy = hoyCR(), sem = inicioSemana(hoy), mes = hoy.slice(0,7);
+  const e = estadoIng(), hoy = hoyCR();
   const hechas = S.citas.filter(c=>c.estado==='completada' && deVista(c));
   const sum = arr => arr.reduce((s,c)=>s+cobrado(c),0);
-  const delDia = hechas.filter(c=>c.fecha===hoy);
-  const delSem = hechas.filter(c=>c.fecha>=sem && c.fecha<=sumarDias(sem,6));
-  const delMes = hechas.filter(c=>c.fecha.slice(0,7)===mes);
+  const entre = (arr,a,b) => arr.filter(c=>c.fecha>=a && c.fecha<=b);
+  const plural = n => n+' cita'+(n===1?'':'s');
   const quien = V.admin.prof === 'todas' ? '' : ' · '+nombreProf(V.admin.prof);
 
-  let h = '<div class="rot">Cobrado, solo citas completadas'+esc(quien)+'</div>';
-  h += '<div class="kpis">'+
-    '<div class="kpi"><div class="k">Hoy</div><div class="v">'+col(sum(delDia))+'</div><div class="s">'+delDia.length+' cita'+(delDia.length===1?'':'s')+'</div></div>'+
-    '<div class="kpi"><div class="k">Semana</div><div class="v">'+col(sum(delSem))+'</div><div class="s">'+delSem.length+' cita'+(delSem.length===1?'':'s')+'</div></div>'+
-    '<div class="kpi"><div class="k">Mes</div><div class="v">'+col(sum(delMes))+'</div><div class="s">'+delMes.length+' cita'+(delMes.length===1?'':'s')+'</div></div>'+
-  '</div>';
-
-  /* Por profesional (siempre se ven todas, para comparar) */
-  const todasMes = S.citas.filter(c=>c.estado==='completada' && c.fecha.slice(0,7)===mes);
-  const totMes = todasMes.reduce((s,c)=>s+cobrado(c),0);
-  h += '<div class="rot">Desglose del mes por profesional</div><div class="card">';
-  for(const p of S.profesionales){
-    const suyas = todasMes.filter(c=>c.prof===p.id);
-    if(!p.activo && !suyas.length) continue;
-    const m = suyas.reduce((s,c)=>s+cobrado(c),0);
-    const pct = totMes ? Math.round(m*100/totMes) : 0;
-    const marcada = V.admin.prof === p.id;
-    h += '<div style="padding:7px 0;'+(V.admin.prof!=='todas' && !marcada?'opacity:.55':'')+'">'+
-      '<div class="lin" style="padding:0"><span style="display:flex;align-items:center;gap:8px"><span class="bolita" style="--c:'+esc(p.color)+'"></span>'+esc(p.nombre)+
-      ' <span class="nota">× '+suyas.length+'</span></span><span class="v">'+col(m)+'</span></div>'+
-      '<div class="barra-pro" style="--c:'+esc(p.color)+'"><i style="width:'+pct+'%"></i></div></div>';
+  /* Tarjetas de arriba: el período actual de cada tipo. Tocar una la abre abajo. */
+  let h = '<div class="rot">Cobrado, solo citas completadas'+esc(quien)+'</div><div class="kpis cuatro">';
+  for(const per of ['dia','semana','mes','anio']){
+    const [a,b] = rangoDe(per, hoy), estas = entre(hechas,a,b);
+    const on = e.per === per && rangoDe(per, e.ref)[0] === a;
+    h += '<button class="kpi'+(on?' on':'')+'" onclick="ingPeriodo(\''+per+'\')" aria-pressed="'+on+'" aria-label="Ver el detalle de '+
+      ({dia:'hoy',semana:'esta semana',mes:'este mes',anio:'este año'})[per]+'">'+
+      '<div class="k">'+NOMBRE_PER[per]+'</div><div class="v">'+col(sum(estas))+'</div><div class="s">'+plural(estas.length)+'</div></button>';
   }
-  h += '<div class="lin tot"><span>Total del estudio</span><span class="v">'+col(totMes)+'</span></div></div>';
+  h += '</div>';
+  h += '<div class="ing-otro"><button class="mini fecha-btn'+(e.per==='rango'?' on':'')+'" onclick="ingRango(\'per\')">'+
+    ICO_PANEL.agenda+'<span>Elegir otras fechas</span></button></div>';
+  if(e.per === 'rango'){
+    h += '<div class="ing-rango">'+
+      '<label>Desde<input type="date" value="'+e.desde+'" max="'+hoy+'" onchange="ingRango(\'desde\',this.value)"></label>'+
+      '<label>Hasta<input type="date" value="'+e.hasta+'" max="'+hoy+'" onchange="ingRango(\'hasta\',this.value)"></label></div>';
+  }
 
-  const porLink = S.citas.filter(c=>c.origen==='link' && deVista(c) && c.fecha.slice(0,7)===mes && ['aprobada','completada'].includes(c.estado));
-  h += '<div style="height:14px"></div>';
-  h += '<div class="destacado"><div class="et" style="font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--acento)">Citas que entraron solas</div>'+
-    '<div class="v">'+porLink.length+'</div>'+
-    '<div class="nota">agendadas por el link este mes, sin que tocaran el teléfono. '+
-    (porLink.length ? 'Son '+col(porLink.reduce((s,c)=>s+c.total,0))+' coordinados sin escribir un mensaje.' : 'Cuando alguien reserve por el link, se cuenta acá.')+'</div></div>';
+  /* El período elegido */
+  const [desde, hasta] = rangoDe(e.per, e.ref);
+  const delPer = entre(hechas, desde, hasta);
+  const total = sum(delPer);
+  const titulo = tituloPeriodo(e.per, e.ref, desde, hasta);
+  h += '<div style="height:18px"></div>';
+  h += e.per === 'rango'
+    ? '<div class="cal-enc" style="justify-content:center"><h3 style="text-align:center;font-size:17px">'+esc(titulo)+'</h3></div>'
+    : '<div class="cal-enc"><button class="flecha" onclick="ingMover(-1)" aria-label="Período anterior">'+ICO.flechaI+'</button>'+
+      '<h3 style="text-align:center;font-size:17px">'+esc(titulo)+'</h3>'+
+      '<button class="flecha" onclick="ingMover(1)" aria-label="Período siguiente">'+ICO.flechaD+'</button></div>';
+  h += '<div class="card ing-total"><div class="nota">Cobrado'+esc(quien)+'</div><div class="v">'+col(total)+'</div>'+
+    '<div class="nota">'+plural(delPer.length)+(delPer.length > 1 ? ' · promedio '+col(total/delPer.length)+' por cita' : '')+'</div></div>';
 
-  h += '<div class="rot">Desglose del mes por servicio'+esc(quien)+'</div>';
-  const cuentas = {};
-  for(const c of delMes){
-    for(const s of c.servicios){
-      const n = nomServ(s);                           // el esmaltado de manos y el de pies, separados
-      cuentas[n] = cuentas[n] || {n:0,m:0};
-      cuentas[n].n++; cuentas[n].m += s.precio;
+  if(!delPer.length){
+    h += vacio(e.per==='dia' && e.ref===hoy ? 'Todavía no hay citas completadas hoy.' : 'No hay citas completadas en este período.', 'hoja');
+  }
+
+  /* Cómo se repartió en el tiempo: mes a mes en el año, día a día en semana y mes. Cada fila abre ese período. */
+  const dias = Math.round((deYMD(hasta) - deYMD(desde)) / 864e5) + 1;
+  if(delPer.length && e.per !== 'dia'){
+    let filas = [];
+    if(e.per === 'anio' || (e.per === 'rango' && dias > 62)){
+      let ym = desde.slice(0,7);
+      while(ym <= hasta.slice(0,7)){
+        const estas = entre(delPer, ym+'-01', finDeMes(ym));
+        filas.push({et: capital(MESES[+ym.slice(5,7)-1]).slice(0,3)+(e.per==='rango' ? ' '+ym.slice(0,4) : ''), m: sum(estas), n: estas.length,
+                    ir: "ingPeriodo('mes','"+ym+"-01')", lbl: MESES[+ym.slice(5,7)-1]+' '+ym.slice(0,4)});
+        const d = deYMD(ym+'-01'); d.setUTCMonth(d.getUTCMonth()+1); ym = d.toISOString().slice(0,7);
+      }
+      h += '<div class="rot">Mes a mes</div>';
+    } else {
+      for(let f = desde; f <= hasta; f = sumarDias(f,1)){
+        const estas = delPer.filter(c=>c.fecha===f);
+        if(e.per !== 'semana' && !estas.length) continue;          // en mes y rango, solo los días con plata
+        filas.push({et: capital(fechaCorta(f)), m: sum(estas), n: estas.length, ir: "ingPeriodo('dia','"+f+"')", lbl: fechaLarga(f).toLowerCase()});
+      }
+      h += '<div class="rot">Día a día</div>';
     }
-  }
-  let extras = 0, extrasSinAnotar = 0;
-  for(const c of delMes){
-    extras += c.extrasCobrado || 0;
-    for(const a of (c.adicionales||[])) if(a.precio != null) extras += a.precio*a.cant;
-    if(tieneConsulta(c) && !c.extrasCobrado) extrasSinAnotar++;
-  }
-  const filas = Object.entries(cuentas).sort((a,b)=>b[1].m-a[1].m);
-  if(!filas.length && !extras) h += vacio('Todavía no hay citas completadas este mes.','hoja');
-  else{
+    const max = Math.max(1, ...filas.map(f=>f.m));
     h += '<div class="card">';
-    for(const [n,d] of filas) h += '<div class="lin"><span>'+esc(n)+' <span class="nota">× '+d.n+'</span></span><span class="v">'+col(d.m)+'</span></div>';
-    h += '<div class="lin sub"><span>Extras (relieves, aerógrafo, efectos)</span><span class="v">'+col(extras)+'</span></div>';
-    h += '<div class="lin tot"><span>Total del mes</span><span class="v">'+col(sum(delMes))+'</span></div>';
-    if(extrasSinAnotar) h += '<div class="nota" style="margin-top:8px">'+extrasSinAnotar+' cita'+(extrasSinAnotar>1?'s':'')+
-      ' con extras sin el monto anotado. Se anota en la tarjeta de la cita, en Agenda.</div>';
+    for(const f of filas){
+      h += '<button class="ing-fila'+(f.m?'':' cero')+'" onclick="'+f.ir+'" aria-label="Ver '+esc(f.lbl)+': '+col(f.m)+'">'+
+        '<span>'+esc(f.et)+(f.n ? ' <span class="nota">× '+f.n+'</span>' : '')+'</span>'+
+        '<span class="barra-pro"><i style="width:'+Math.round(f.m*100/max)+'%"></i></span>'+
+        '<span class="v">'+col(f.m)+'</span></button>';
+    }
     h += '</div>';
   }
 
-  const dep = delMes.reduce((s,c)=>s+c.deposito,0);
-  if(S.config.pideDeposito || dep){
-    h += '<div class="rot">Cómo entró la plata este mes</div>';
-    h += '<div class="card">'+
-      '<div class="lin"><span>Adelantado por SINPE (depósitos)</span><span class="v">'+col(dep)+'</span></div>'+
-      '<div class="lin"><span>Cobrado en el estudio</span><span class="v">'+col(sum(delMes)-dep)+'</span></div>'+
-      '<div class="lin tot"><span>Total</span><span class="v">'+col(sum(delMes))+'</span></div>'+
-      '<div class="nota" style="margin-top:10px">Los depósitos ya estaban en la cuenta antes de que la clienta llegara.</div>'+
-    '</div>';
+  /* Por profesional: siempre se ven todas, para comparar */
+  const todasPer = entre(S.citas.filter(c=>c.estado==='completada'), desde, hasta);
+  const totPer = sum(todasPer);
+  if(todasPer.length){
+    h += '<div class="rot">Por profesional</div><div class="card">';
+    for(const p of S.profesionales){
+      const suyas = todasPer.filter(c=>c.prof===p.id);
+      if(!p.activo && !suyas.length) continue;
+      const m = sum(suyas), pct = totPer ? Math.round(m*100/totPer) : 0;
+      const marcada = V.admin.prof === p.id;
+      h += '<div style="padding:7px 0;'+(V.admin.prof!=='todas' && !marcada?'opacity:.55':'')+'">'+
+        '<div class="lin" style="padding:0"><span style="display:flex;align-items:center;gap:8px"><span class="bolita" style="--c:'+esc(p.color)+'"></span>'+esc(p.nombre)+
+        ' <span class="nota">× '+suyas.length+' · '+pct+'%</span></span><span class="v">'+col(m)+'</span></div>'+
+        '<div class="barra-pro" style="--c:'+esc(p.color)+'"><i style="width:'+pct+'%"></i></div></div>';
+    }
+    h += '<div class="lin tot"><span>Total del estudio</span><span class="v">'+col(totPer)+'</span></div></div>';
   }
+
+  /* Por servicio */
+  if(delPer.length){
+    const cuentas = {};
+    for(const c of delPer){
+      for(const s of c.servicios){
+        const n = nomServ(s);                           // el esmaltado de manos y el de pies, separados
+        cuentas[n] = cuentas[n] || {n:0,m:0};
+        cuentas[n].n++; cuentas[n].m += s.precio;
+      }
+    }
+    let extras = 0, extrasSinAnotar = 0;
+    for(const c of delPer){
+      extras += c.extrasCobrado || 0;
+      for(const a of (c.adicionales||[])) if(a.precio != null) extras += a.precio*a.cant;
+      if(tieneConsulta(c) && !c.extrasCobrado) extrasSinAnotar++;
+    }
+    const filas = Object.entries(cuentas).sort((a,b)=>b[1].m-a[1].m);
+    const max = Math.max(1, ...filas.map(f=>f[1].m), extras);
+    h += '<div class="rot">De qué servicios vino'+esc(quien)+'</div><div class="card">';
+    for(const [n,d] of filas){
+      h += '<div style="padding:5px 0"><div class="lin" style="padding:0"><span>'+esc(n)+' <span class="nota">× '+d.n+'</span></span><span class="v">'+col(d.m)+'</span></div>'+
+        '<div class="barra-pro"><i style="width:'+Math.round(d.m*100/max)+'%"></i></div></div>';
+    }
+    h += '<div class="lin sub"><span>Extras (relieves, aerógrafo, efectos)</span><span class="v">'+col(extras)+'</span></div>';
+    h += '<div class="lin tot"><span>Total</span><span class="v">'+col(total)+'</span></div>';
+    if(extrasSinAnotar) h += '<div class="nota" style="margin-top:8px">'+plural(extrasSinAnotar)+
+      ' con extras sin el monto anotado. Se anota en la tarjeta de la cita.</div>';
+    h += '</div>';
+  }
+
+  /* Cómo entró la plata */
+  const dep = delPer.reduce((s,c)=>s+c.deposito,0);
+  if(delPer.length && (S.config.pideDeposito || dep)){
+    h += '<div class="rot">Cómo entró la plata</div><div class="card">'+
+      '<div class="lin"><span>Adelantado por SINPE (depósitos)</span><span class="v">'+col(dep)+'</span></div>'+
+      '<div class="lin"><span>Cobrado en el estudio</span><span class="v">'+col(total-dep)+'</span></div>'+
+      '<div class="lin tot"><span>Total</span><span class="v">'+col(total)+'</span></div></div>';
+  }
+
+  /* Las citas que suman: se tocan para abrirlas */
+  if(delPer.length){
+    const orden = delPer.slice().sort((a,b)=> b.fecha.localeCompare(a.fecha) || aMin(b.hora)-aMin(a.hora));
+    const tope = e.verTodas ? orden.length : 12;
+    h += '<div class="rot">Las citas que suman</div>';
+    for(const c of orden.slice(0, tope)){
+      h += '<button class="dia-fila" style="--c:'+esc(colorProf(c.prof))+'" onclick="modalCita(\''+c.id+'\')">'+
+        '<span class="dia-h">'+(e.per==='dia' ? hora12(aMin(c.hora)) : capital(fechaCorta(c.fecha)))+'</span>'+
+        '<span class="dia-txt"><b>'+esc(c.cliente.nombre)+'</b><span class="nota">'+esc(c.servicios.map(nomServ).join(' + '))+', con '+esc(nombreProf(c.prof))+'</span></span>'+
+        '<span class="v" style="white-space:nowrap">'+col(cobrado(c))+'</span></button>';
+    }
+    if(orden.length > tope) h += '<button class="txt-btn" style="width:100%" onclick="ingVerTodas()">Ver las '+orden.length+' citas</button>';
+  }
+
+  /* Lo que viene: confirmado en el período pero todavía sin cobrar */
+  const porCobrar = S.citas.filter(c=>c.estado==='aprobada' && deVista(c) && c.fecha>=desde && c.fecha<=hasta);
+  if(porCobrar.length){
+    h += '<div class="nota" style="margin-top:14px">Además hay '+plural(porCobrar.length)+' confirmada'+(porCobrar.length===1?'':'s')+
+      ' en este período, por '+col(porCobrar.reduce((s,c)=>s+c.total,0))+'. Se suman cuando se marcan como completadas.</div>';
+  }
+
+  /* Citas que entraron solas por el link en el período */
+  const porLink = S.citas.filter(c=>c.origen==='link' && deVista(c) && c.fecha>=desde && c.fecha<=hasta && ['aprobada','completada'].includes(c.estado));
+  h += '<div style="height:14px"></div>';
+  h += '<div class="destacado"><div class="et" style="font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--acento)">Citas que entraron solas</div>'+
+    '<div class="v">'+porLink.length+'</div>'+
+    '<div class="nota">agendadas por el link en este período, sin que tocaran el teléfono. '+
+    (porLink.length ? 'Son '+col(porLink.reduce((s,c)=>s+c.total,0))+' coordinados sin escribir un mensaje.' : 'Cuando alguien reserve por el link, se cuenta acá.')+'</div></div>';
   return h;
 }
 /* ============================================================
@@ -3792,6 +3945,35 @@ function sembrar(){
   // los dos esmaltados en una misma cita: manos y pies
   arma('p1','Priscilla Vargas','+506 8925 7110', d1, ['s3','s7'], false, 'pendiente', {pref:14*60});
   arma('p2','Andrea Quesada',  '+506 8320 6645', d2, ['s4'], false, 'rechazada', {pref:11*60, hist:[['Rechazada','Valeria']]});
+
+  // Historial de ejemplo: unos once meses de citas ya cobradas, para que Ingresos tenga
+  // con qué mostrar el año, mes a mes. Sale siempre igual (números pseudoaleatorios con semilla).
+  let semilla = 20251;
+  const azar = () => { semilla = (semilla*16807) % 2147483647; return semilla/2147483647; };
+  const clientas = [['Sofía Mora','+506 8711 2034'],['Valentina Castro','+506 8455 9012'],['Camila Ulate','+506 7020 6631'],['Lucía Herrera','+506 8890 1477'],
+    ['Gabriela Solano','+506 6104 3358'],['María José Vega','+506 8366 7720'],['Paula Alfaro','+506 7255 0193'],['Isabella Méndez','+506 8619 4482'],
+    ['Raquel Zúñiga','+506 8047 3315'],['Adriana Porras','+506 6233 8806'],['Jimena Salas','+506 8972 5541'],['Carolina Murillo','+506 7311 6620'],
+    ['Melany Arias','+506 8580 2267'],['Fernanda León','+506 6488 9134'],['Stephanie Calvo','+506 8126 7703'],['Nicole Campos','+506 7064 5589']];
+  const combos = [['s3'],['s3'],['s4'],['s4'],['s2'],['s2'],['s5'],['s6'],['s1'],['s3','s7'],['s4','s5'],['s2','s6']];
+  for(let f = sumarDias(hoy,-330); f < dPrev; f = sumarDias(f,1)){
+    const mes = +f.slice(5,7), lejos = (deYMD(hoy) - deYMD(f)) / 864e5;
+    // diciembre se llena; y la agenda va creciendo con los meses
+    const ganas = (mes === 12 ? 1.6 : 1) * (1.15 - lejos/600);
+    for(const p of S.profesionales){
+      if(!p.activo || !horarioDe(p, f).length) continue;
+      const cuantas = Math.floor(azar()*3.2*ganas);
+      for(let k=0;k<cuantas;k++){
+        const [nombre, tel] = clientas[Math.floor(azar()*clientas.length)];
+        const ids = combos[Math.floor(azar()*combos.length)];
+        const conExtra = azar() < .18;
+        arma(p.id, nombre, tel, f, ids, conExtra, 'completada', {
+          pref: (9 + k*3.5)*60, origen: azar() < .55 ? 'link' : 'manual', por: p.nombre,
+          extrasCobrado: conExtra ? 2000 + Math.floor(azar()*4)*1000 : 0,
+          hist: [['Aprobada', p.nombre], ['Marcada completada', p.nombre]]
+        });
+      }
+    }
+  }
 }
 /* ============================================================
    10. Arranque y reloj
