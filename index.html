@@ -249,6 +249,57 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xm
 }
 .vacio-mini{margin:4px 0 8px;padding:14px 0;font-size:12.5px;color:var(--lectura);text-align:center;border:1px dashed var(--linea);border-radius:var(--r-sm)}
 
+/* ---------- panel: encabezado con campanita y menú ---------- */
+.pan-enc{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;padding:10px 12px 10px 18px;
+  background:rgba(247,245,239,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--linea)}
+.pan-enc .logo-vz{width:38px;height:38px;font-size:9.5px}
+.pan-tit{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
+.pan-sec{font-size:17px;font-weight:400;color:var(--texto);letter-spacing:.01em}
+.pan-yo{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--tenue);margin-top:2px}
+.pan-ico{position:relative;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--texto);display:flex;align-items:center;justify-content:center;flex:none}
+.pan-ico:hover{background:rgba(168,169,141,.16)}
+.pan-ico .bola{position:absolute;top:4px;right:3px;background:var(--alerta);color:#fff;font-size:10px;min-width:18px;height:18px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid var(--fondo)}
+/* menú lateral: entra desde la derecha */
+.velo.velo-cajon{justify-content:flex-end;align-items:stretch;padding:0}
+.cajon{width:min(320px,86vw);height:100%;background:var(--fondo);display:flex;flex-direction:column;padding:16px 14px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:-10px 0 40px rgba(55,56,44,.18);animation:cajon-entra .22s ease-out;overflow-y:auto}
+@keyframes cajon-entra{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.cajon{animation:none}}
+.menu-enc{display:flex;align-items:center;gap:12px;padding:2px 4px 16px;border-bottom:1px solid var(--linea)}
+.menu-enc .logo-vz{width:40px;height:40px;font-size:10px}
+.menu-marca{flex:1;display:flex;flex-direction:column;line-height:1.3}
+.menu-marca b{font-weight:300;font-size:15px;letter-spacing:.32em}
+.menu-marca span{font-size:11.5px;color:var(--tenue)}
+.menu-enc .x{border:0;background:transparent;font-size:26px;line-height:1;color:var(--texto);width:44px;height:44px}
+.menu-lista{display:flex;flex-direction:column;gap:2px;padding:12px 0}
+.menu-item{display:flex;align-items:center;gap:14px;width:100%;min-height:52px;padding:0 12px;border:0;border-radius:12px;background:transparent;
+  font-size:15.5px;color:var(--texto);text-align:left}
+.menu-item svg{flex:none;color:var(--oliva-prof)}
+.menu-item:hover{background:rgba(168,169,141,.14)}
+.menu-item.on{background:var(--oliva-prof);color:#fff}
+.menu-item.on svg{color:#fff}
+.menu-item .bola{margin-left:auto;background:var(--alerta);color:#fff;font-size:11px;min-width:22px;height:22px;border-radius:11px;display:flex;align-items:center;justify-content:center;padding:0 6px}
+.menu-pie{margin-top:auto;padding-top:12px;border-top:1px solid var(--linea)}
+.menu-yo{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;padding:8px 12px 12px;font-size:13px;color:var(--lectura)}
+.menu-yo b{font-weight:400;color:var(--texto)}
+.menu-yo .txt-btn{padding:0 2px;font-size:12.5px}
+.menu-item.salir{color:var(--alerta)}
+.menu-item.salir svg{color:var(--alerta)}
+/* campanita y día: listas cortas dentro de la ventana */
+.pend-fila{border:1px solid var(--linea);border-left:3px solid var(--c);border-radius:var(--r-sm);background:#fff;padding:10px 12px;margin-bottom:10px}
+.pend-info{display:flex;flex-direction:column;gap:2px;width:100%;border:0;background:none;padding:0;text-align:left;font-size:13px;color:var(--lectura)}
+.pend-info b{font-weight:400;font-size:15px;color:var(--texto)}
+.pend-acc{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.pend-acc .mini{justify-content:center;min-height:38px;padding:8px 6px}
+.pend-acc .tag{display:flex;align-items:center;justify-content:center;text-align:center;white-space:normal;line-height:1.3}
+.dia-fila{display:flex;align-items:center;gap:12px;width:100%;margin-bottom:8px;padding:11px 12px;border:1px solid var(--linea);border-left:3px solid var(--c);
+  border-radius:var(--r-sm);background:#fff;text-align:left}
+.dia-h{font-size:13px;color:var(--texto);min-width:66px;font-variant-numeric:tabular-nums}
+.dia-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:14px}
+.dia-txt b{font-weight:400;color:var(--texto)}
+.hoja-modal .btn svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:1.6;flex:none}
+
 /* ---------- agenda: selector Día · Semana · Mes ---------- */
 .vistas{display:flex;align-items:center;gap:10px;margin:0 0 16px}
 .vistas-sel{display:flex;flex:1;max-width:340px;padding:3px;border:1px solid var(--linea-fuerte);border-radius:30px;background:#fff}
@@ -633,6 +684,12 @@ body.pub .v-btn[disabled]{background:transparent;color:var(--gris);border-color:
 .v-desc .ver-mas{display:inline-block;padding:6px 0 0;background:none;border:0;font-size:13px;color:var(--tinta);letter-spacing:0;text-decoration:underline;text-decoration-color:var(--hilo);text-underline-offset:3px}
 .v-nota-cat{font-size:13px;color:var(--gris);margin:12px 0 0;line-height:1.55}
 .v-tope{font-size:13.5px;margin:-6px 0 0;color:var(--tinta)}
+/* aviso de las reglas del menú (qué se quitó o por qué no se puede) */
+.v-nota-serv{margin:-4px 0 0;padding:10px 12px;border-left:3px solid var(--accion);background:rgba(168,169,141,.14);font-size:13.5px;color:var(--tinta)}
+/* en una fila bloqueada, el motivo se lee aunque la fila esté atenuada */
+.v-motivo{font-size:12.5px;color:var(--tinta);margin-top:2px}
+.v-fila.tope .v-fila-cab{opacity:1}
+.v-fila.tope .v-nom,.v-fila.tope .v-meta,.v-fila.tope .v-precio,.v-fila.tope .v-foto{opacity:.45}
 
 /* elegir: franja de acción a la izquierda y casilla al lado del precio */
 .v-fila.elegible{transition:background .15s}
@@ -964,17 +1021,22 @@ function datosIniciales(){
        admiteDisenio: si lleva el paso "¿Qué tan elaborado es tu diseño?". */
     servicios:[
       // TODO nombre: en el menú es "Manicure ruso" y en sus redes "Manicure tradicional". Confirmar con VAZÚ cuál usar.
+      /* Reglas del menú al elegir (de su propio menú):
+         incluye: lo que ya viene dentro del servicio; no se puede sumar aparte.
+         grupo:   variantes del mismo servicio (con o sin esmaltado); se elige una sola.
+         noCon:   combinaciones que no tienen sentido, con el motivo que ve la clienta. */
       {id:'s1', cat:'natural', nombre:'Manicure ruso', precio:10000, min:45, todo:true, prof:null, admiteDisenio:false, // TODO duración estimada
        desc:'Es una técnica de manicura de alta precisión que se realiza en seco, utilizando fresas especiales para limpiar profundamente la cutícula y el contorno de la uña. Esto permite un acabado más prolijo, duradero y definido.'},
-      {id:'s2', cat:'natural', nombre:'Nivelación con builder gel', precio:20000, min:90, todo:true, prof:null, admiteDisenio:true, // TODO duración estimada
+      {id:'s2', cat:'natural', nombre:'Nivelación con builder gel', precio:20000, min:90, todo:true, prof:null, admiteDisenio:true, incluye:['s1'], // TODO duración estimada
        desc:'Es un gel constructor que se aplica sobre la uña natural, dando grosor, fuerza, mayor resistencia y corrección en la forma de la uña, esto de manera artificial. De igual manera ayuda a que el esmaltado luzca más limpio y perfecto.'},
-      {id:'s3', cat:'natural', nombre:'Esmaltado semipermanente', precio:14000, min:75, todo:true, prof:null, admiteDisenio:true, // TODO duración estimada
+      {id:'s3', cat:'natural', nombre:'Esmaltado semipermanente', precio:14000, min:75, todo:true, prof:null, admiteDisenio:true, incluye:['s1'], // TODO duración estimada
        desc:DESC_ESMALTADO},
-      {id:'s4', cat:'extensiones', nombre:'Gel X', precio:22000, min:120, todo:true, prof:null, admiteDisenio:true, // TODO duración estimada
+      {id:'s4', cat:'extensiones', nombre:'Gel X', precio:22000, min:120, todo:true, prof:null, admiteDisenio:true, incluye:['s1'], // TODO duración estimada
        desc:'El sistema Gel X es una técnica de extensión de uñas que utiliza tips hechos completamente de gel suave (soft gel), que se adhieren a la uña natural con una base especial y se curan en lámpara LED. A diferencia de las uñas acrílicas tradicionales, no lleva polímero en polvo ni monómero, por lo que el proceso es más ligero, sin olores fuertes y limado.'},
-      {id:'s5', cat:'pies', nombre:'Pedicure en seco / técnica rusa', precio:20000, min:75, todo:true, prof:null, admiteDisenio:true, // TODO duración estimada
+      {id:'s5', cat:'pies', nombre:'Pedicure en seco / técnica rusa', precio:20000, min:75, todo:true, prof:null, admiteDisenio:true, grupo:'pedicure', incluye:['s7'], // TODO duración estimada. TODO confirmar: se asume que incluye el esmaltado (la versión sin esmaltado cuesta menos)
        desc:DESC_PEDI},
-      {id:'s6', cat:'pies', nombre:'Pedicure en seco / técnica rusa sin esmaltado', precio:15000, min:60, todo:true, prof:null, admiteDisenio:false, // TODO duración estimada
+      {id:'s6', cat:'pies', nombre:'Pedicure en seco / técnica rusa sin esmaltado', precio:15000, min:60, todo:true, prof:null, admiteDisenio:false, grupo:'pedicure',
+       noCon:{s7:'Para pedicure con esmaltado elegí "Pedicure en seco / técnica rusa": ya lo incluye.'}, // TODO duración estimada
        desc:DESC_PEDI},
       {id:'s7', cat:'pies', nombre:'Esmaltado semipermanente', precio:12000, min:45, todo:true, prof:null, admiteDisenio:true, // TODO duración estimada
        desc:DESC_ESMALTADO}
@@ -1106,6 +1168,41 @@ const hace = (p, s) => !!p && !!s && (!s.prof || s.prof === p.id);
 /* Profesionales activas que pueden hacer todos los servicios elegidos */
 function profsPara(ids){
   return profsActivas().filter(p => ids.every(id => hace(p, servicio(id))));
+}
+
+/* ------------------------------------------------------------
+   Reglas del menú al elegir servicios (incluye, grupo, noCon).
+   Las usan la reserva de la clienta y la cita manual del panel.
+   ------------------------------------------------------------ */
+const nomCorto = s => nomServ(s);   // los nombres van tal cual están en su menú ("Gel X", no "gel X")
+/* Por qué no se puede sumar este servicio a lo elegido (null si se puede) */
+function motivoBloqueo(id, sel){
+  const s = servicio(id); if(!s) return null;
+  for(const x of sel.map(servicio).filter(Boolean)){
+    if(x.id === id) continue;
+    if((x.incluye||[]).includes(id)) return 'Ya viene incluido en '+nomCorto(x)+'.';
+    if(x.noCon && x.noCon[id]) return x.noCon[id];
+    if(s.noCon && s.noCon[x.id]) return s.noCon[x.id];
+  }
+  return null;
+}
+/* Agrega o quita un servicio aplicando las reglas.
+   Devuelve {sel, aviso} o {error}. No modifica la lista que recibe. */
+function aplicarReglas(lista, id){
+  let sel = lista.slice();
+  if(sel.includes(id)) return {sel: sel.filter(x => x !== id)};
+  const motivo = motivoBloqueo(id, sel);
+  if(motivo) return {error: motivo};
+  const s = servicio(id), avisos = [];
+  // lo que el nuevo ya incluye, o su otra variante (con o sin esmaltado), sale de la cita
+  for(const x of sel.slice()){
+    const sx = servicio(x); if(!sx) continue;
+    if((s.incluye||[]).includes(x)){ sel = sel.filter(y => y !== x); avisos.push(nomServ(s)+' ya incluye '+nomCorto(sx)+': lo quitamos de tu cita.'); }
+    else if(s.grupo && sx.grupo === s.grupo){ sel = sel.filter(y => y !== x); avisos.push('Cambiamos '+nomCorto(sx)+' por '+nomCorto(s)+'.'); }
+  }
+  if(sel.length >= 2) return {error: 'Ya elegiste dos servicios. Quitá uno para sumar otro.'};
+  sel.push(id);
+  return {sel, aviso: avisos.join(' ') || null};
 }
 /* Precio de un extra para mostrar: nunca ₡0 si no tiene precio fijo */
 function precioAdic(a){ return a.precio == null ? 'a consultar' : col(a.precio * (a.cant||1)); }
@@ -1746,7 +1843,9 @@ function pasoServicios(){
   let h = tituloPaso('¿Qué te vas a hacer?');
   h += conQuien();
   h += '<p class="v-bajada">Hasta dos servicios en la misma cita, por ejemplo manos y pies. Se hacen uno seguido del otro.</p>';
-  if(V.sel.length === 2) h += '<p class="v-tope">Ya elegiste dos. Para cambiar uno, quitá el que no querés.</p>';
+  // lo que pasó con el último toque (por ejemplo "Gel X ya incluye manicure ruso: lo quitamos de tu cita.")
+  if(V.notaServ) h += '<p class="v-nota-serv" role="status">'+esc(V.notaServ)+'</p>';
+  else if(V.sel.length === 2) h += '<p class="v-tope">Ya elegiste dos. Para cambiar uno, quitá el que no querés.</p>';
   // con una profesional específica, solo lo que ella hace
   const p = V.prof && V.prof !== 'cualquiera' ? prof(V.prof) : null;
   const disponible = s => p ? hace(p, s) : profsActivas().some(x => hace(x, s));
@@ -1757,11 +1856,16 @@ function pasoServicios(){
     h += '<h2 class="v-cat">'+esc(cat.n)+'</h2><div class="v-lista">';
     for(const s of lista){
       const on = V.sel.includes(s.id);
-      const tope = !on && V.sel.length >= 2;
+      // se puede tocar si las reglas lo permiten (una variante del pedicure sí cambia la otra aunque ya haya dos)
+      const tope = !on && !!aplicarReglas(V.sel, s.id).error;
+      const motivo = on ? null : motivoBloqueo(s.id, V.sel);
+      const incluye = (s.incluye||[]).map(servicio).filter(Boolean).map(nomCorto);
       h += '<div class="v-fila elegible'+(on?' sel':'')+(tope?' tope':'')+'">'+
         '<button class="v-fila-cab" '+(tope?'disabled':'')+' aria-pressed="'+on+'" onclick="tocarServicio(\''+s.id+'\')">'+
           filaFoto(s)+
-          '<span class="v-txt"><span class="v-nom">'+esc(s.nombre)+'</span><span class="v-meta">'+durTxt(s)+'</span></span>'+
+          '<span class="v-txt"><span class="v-nom">'+esc(s.nombre)+'</span>'+
+            '<span class="v-meta">'+durTxt(s)+(incluye.length ? (durTxt(s).endsWith('.') ? ' ' : '. ')+'Incluye '+esc(incluye.join(' y ')) : '')+'</span>'+
+            (motivo ? '<span class="v-motivo">'+esc(motivo)+'</span>' : '')+'</span>'+
           '<span class="v-precio">'+col(s.precio)+'<span class="v-caja" aria-hidden="true">'+ICO.check+'</span></span>'+
         '</button>'+
         '<div class="v-desc">'+descHTML('r'+s.id, s.desc)+'</div>'+
@@ -2059,10 +2163,10 @@ function elegirProf(id){
   irPaso(2);
 }
 function tocarServicio(id){
-  const i = V.sel.indexOf(id);
-  if(i >= 0) V.sel.splice(i,1);
-  else if(V.sel.length < 2) V.sel.push(id);
-  V.hora = null;
+  const r = aplicarReglas(V.sel, id);
+  // el aviso queda escrito arriba de la lista hasta el próximo cambio (no se pierde como un aviso flotante)
+  V.notaServ = r.error || r.aviso || null;
+  if(!r.error){ V.sel = r.sel; V.hora = null; }
   const y = window.scrollY; pintar(); window.scrollTo(0,y);
 }
 function ponAdic(id,q){
@@ -2081,7 +2185,7 @@ function moverMes(n){
 }
 function irPaso(p){
   if(p <= 5 && V.citaId) soltarApartado(true);
-  V.paso = p; V.errores = {};
+  V.paso = p; V.errores = {}; V.notaServ = null;
   window.scrollTo(0,0);
   pintar();
 }
@@ -2233,7 +2337,7 @@ function enviarComprobante(){
 }
 
 function reiniciarFlujo(){
-  V.sel = []; V.adic = {}; V.disenio = ''; V.nivel = null; V.refDisenio = null;
+  V.sel = []; V.adic = {}; V.disenio = ''; V.nivel = null; V.refDisenio = null; V.notaServ = null;
   V.fecha = null; V.hora = null; V.horaProf = null; V.citaId = null;
   V.prof = null;
   V.cliente = {nombre:'',pais:'CR',tel:'',email:''};
@@ -2344,29 +2448,136 @@ function histHTML(c){
 function salirAdmin(){ V.pantalla = 'inicio'; window.scrollTo(0,0); pintar(); }
 function tabAdmin(t){ V.admin.tab = t; window.scrollTo(0,0); pintar(); }
 
+/* ------------------------------------------------------------
+   Panel: encabezado simple (sección actual, campanita y menú).
+   Todo lo demás vive en el menú hamburguesa, incluida la salida.
+   ------------------------------------------------------------ */
+const SECCIONES_PANEL = [['solicitudes','Solicitudes'],['agenda','Agenda'],['ingresos','Ingresos'],['config','Configuración']];
+const ICO_PANEL = {
+  campana:'<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5a6 6 0 0112 0c0 4.5 1.6 6.2 2.2 6.8H3.8C4.4 15.7 6 14 6 9.5z"/><path d="M10 19.5a2.2 2.2 0 004 0"/></svg>',
+  menu:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+  solicitudes:'<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M4 13l2.5-7h11L20 13v5H4z"/><path d="M4 13h4.5l1 2h5l1-2H20"/></svg>',
+  agenda:'<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="5.5" width="16" height="14" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></svg>',
+  ingresos:'<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M5 19V11M10 19V6M15 19v-5M20 19V9"/></svg>',
+  config:'<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>',
+  salir:'<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5H6v14h8"/><path d="M11 12h9M17 9l3 3-3 3"/></svg>'
+};
+/* Citas que esperan una decisión: por confirmar, o apartadas esperando el depósito */
+const porConfirmar = () => S.citas.filter(c => c.estado === 'pendiente' || (c.estado === 'apartada' && bloquea(c)));
+
 function verAdmin(){
-  const pend = S.citas.filter(c=>c.estado==='pendiente' && deVista(c)).length;
-  const apart = S.citas.filter(c=>c.estado==='apartada' && bloquea(c) && deVista(c)).length;
-  const n = pend + apart;
-  let h = encabezado('Panel');
-  h += '<div class="tabs">';
-  const tabs = [['solicitudes','Solicitudes'],['agenda','Agenda'],['config','Configuración'],['ingresos','Ingresos']];
-  for(const [k,t] of tabs){
-    h += '<button class="tab '+(V.admin.tab===k?'on':'')+'" onclick="tabAdmin(\''+k+'\')">'+t+
-      (k==='solicitudes'&&n?'<span class="bola">'+n+'</span>':'')+'</button>';
-  }
-  h += '</div><div class="cuerpo" style="padding-top:18px">';
-  if(V.admin.yo) h += '<div class="yo"><span class="bolita" style="--c:'+esc(colorProf(V.admin.yo))+'"></span>Usando el panel como <b>'+esc(quienSoy())+'</b>'+
-    (profsActivas().length > 1 ? '<button class="txt-btn" onclick="elegirYo()">cambiar</button>' : '')+'</div>';
+  const n = porConfirmar().length;
+  const titulo = (SECCIONES_PANEL.find(s => s[0] === V.admin.tab) || [null,'Panel'])[1];
+  let h = '<header class="pan-enc">'+
+    '<div class="logo-vz" aria-hidden="true"><span>VA</span><span>ZÚ</span></div>'+
+    '<div class="pan-tit"><span class="pan-sec">'+titulo+'</span>'+
+      (V.admin.yo ? '<span class="pan-yo"><span class="bolita" style="--c:'+esc(colorProf(V.admin.yo))+'"></span>'+esc(quienSoy())+'</span>' : '')+'</div>'+
+    '<button class="pan-ico" onclick="verPendientes()" aria-label="'+(n ? n+' cita'+(n>1?'s':'')+' por confirmar' : 'No hay citas por confirmar')+'">'+
+      ICO_PANEL.campana+(n ? '<span class="bola">'+n+'</span>' : '')+'</button>'+
+    '<button class="pan-ico" onclick="abrirMenu()" aria-label="Abrir el menú" aria-haspopup="dialog">'+ICO_PANEL.menu+'</button>'+
+  '</header>';
+  h += '<div class="cuerpo" style="padding-top:16px">';
   if(V.admin.tab !== 'config') h += filtroPro();
   if(V.admin.tab==='solicitudes') h += tabSolicitudes();
   if(V.admin.tab==='agenda')      h += tabAgenda();
   if(V.admin.tab==='config')      h += tabConfig();
   if(V.admin.tab==='ingresos')    h += tabIngresos();
-  h += '<div style="height:26px"></div><button class="txt-btn" style="width:100%" onclick="salirAdmin()">Salir del panel</button>';
   h += '</div>';
   h += '<button class="fab" onclick="modalManual()">'+ICO.mas+'Cita manual</button>';
   return h;
+}
+
+/* Menú hamburguesa: secciones, quién usa el panel y salir */
+function cajon(html){
+  document.getElementById('capa-modal').innerHTML =
+    '<div class="velo velo-cajon" onclick="if(event.target===this)cerrarModal()"><div class="cajon" role="dialog" aria-modal="true" aria-label="Menú del panel">'+html+'</div></div>';
+  const primero = document.querySelector('.cajon .menu-item'); if(primero) primero.focus();
+}
+function abrirMenu(){
+  const n = porConfirmar().length;
+  let h = '<div class="menu-enc"><div class="logo-vz" aria-hidden="true"><span>VA</span><span>ZÚ</span></div>'+
+    '<div class="menu-marca"><b>VAZÚ</b><span>Panel del estudio</span></div>'+
+    '<button class="x" onclick="cerrarModal()" aria-label="Cerrar el menú">×</button></div>';
+  h += '<nav class="menu-lista" aria-label="Secciones del panel">';
+  for(const [k,t] of SECCIONES_PANEL){
+    h += '<button class="menu-item'+(V.admin.tab===k?' on':'')+'" '+(V.admin.tab===k?'aria-current="page" ':'')+'onclick="cerrarModal();tabAdmin(\''+k+'\')">'+
+      ICO_PANEL[k]+'<span>'+t+'</span>'+(k==='solicitudes' && n ? '<span class="bola">'+n+'</span>' : '')+'</button>';
+  }
+  h += '</nav><div class="menu-pie">';
+  if(V.admin.yo){
+    h += '<div class="menu-yo"><span class="bolita" style="--c:'+esc(colorProf(V.admin.yo))+'"></span>'+
+      '<span>Usando el panel como <b>'+esc(quienSoy())+'</b></span>'+
+      (profsActivas().length > 1 ? '<button class="txt-btn" onclick="elegirYo()">Cambiar</button>' : '')+'</div>';
+  }
+  h += '<button class="menu-item salir" onclick="cerrarModal();salirAdmin()">'+ICO_PANEL.salir+'<span>Salir del panel</span></button></div>';
+  cajon(h);
+}
+
+/* Campanita: las citas que esperan una decisión, con las acciones a mano */
+function verPendientes(){
+  const lista = porConfirmar().sort((a,b) => (a.fecha+a.hora).localeCompare(b.fecha+b.hora));
+  let h = '<div class="modal-enc"><div><h3>Por confirmar</h3><div class="nota">'+
+    (lista.length ? lista.length+' cita'+(lista.length>1?'s esperan':' espera')+' una respuesta.' : 'Todo al día.')+'</div></div>'+
+    '<button class="x" onclick="cerrarModal()" aria-label="Cerrar">×</button></div>';
+  if(!lista.length) h += '<p class="vacio-mini">No hay citas por confirmar.</p>';
+  for(const c of lista){
+    h += '<div class="pend-fila" style="--c:'+esc(colorProf(c.prof))+'">'+
+      '<button class="pend-info" onclick="modalCita(\''+c.id+'\')">'+
+        '<b>'+esc(c.cliente.nombre)+'</b>'+
+        '<span>'+capital(fechaCorta(c.fecha))+', '+hora12(aMin(c.hora))+', con '+esc(nombreProf(c.prof))+'</span>'+
+        '<span class="nota">'+esc(c.servicios.map(nomServ).join(' + '))+'</span></button>'+
+      '<div class="pend-acc">'+
+        (c.estado === 'pendiente'
+          ? '<button class="mini g" onclick="aprobar(\''+c.id+'\');verPendientes()">Aprobar</button>'
+          : '<span class="tag aviso">Esperando el depósito</span>')+
+        '<button class="mini" onclick="modalCita(\''+c.id+'\')">Ver</button>'+
+        '<button class="mini r" onclick="rechazar(\''+c.id+'\');verPendientes()">Rechazar</button>'+
+      '</div></div>';
+  }
+  modal(h);
+}
+
+/* Una cita sola, con todo su detalle y sus acciones (desde la campanita, la semana o el mes) */
+function modalCita(id){
+  const c = S.citas.find(x => x.id === id); if(!c){ cerrarModal(); return; }
+  let h = '<div class="modal-enc"><div><h3>'+esc(c.cliente.nombre)+'</h3>'+
+    '<div class="nota">'+capital(fechaLarga(c.fecha))+', '+hora12(aMin(c.hora))+'</div></div>'+
+    '<button class="x" onclick="cerrarModal()" aria-label="Cerrar">×</button></div>';
+  h += abreCita(c)+encCita(c)+detalleCita(c)+'<div class="acc">'+accionesCita(c, true)+'</div></div>';
+  modal(h);
+}
+/* Después de una acción dentro de la ventana de la cita, la ventana se actualiza (o se cierra si la cita ya no existe) */
+function refrescarCita(id){ if(S.citas.some(x => x.id === id)) modalCita(id); else cerrarModal(); }
+
+/* Los botones de una cita, iguales en la agenda y en la ventana de la cita */
+function accionesCita(c, enVentana){
+  const id = c.id, luego = enVentana ? ';refrescarCita(\''+id+'\')' : '';
+  const activa = !['rechazada','cancelada','expirada'].includes(c.estado);
+  let h = botonWA(c);
+  if(activa && c.estado !== 'completada') h += '<button class="mini" onclick="modalMover(\''+id+'\')">Mover</button>';
+  if(c.estado === 'pendiente') h += '<button class="mini" onclick="modalDuracion(\''+id+'\')">Ajustar duración</button>';
+  if(c.estado === 'pendiente') h += '<button class="mini g" onclick="aprobar(\''+id+'\')'+luego+'">Aprobar</button>';
+  if(c.estado === 'aprobada') h += '<button class="mini g" onclick="completar(\''+id+'\')'+luego+'">Marcar completada</button>';
+  if(activa) h += '<button class="mini r" onclick="cancelar(\''+id+'\')'+luego+'">Cancelar</button>';
+  h += '<button class="mini r" onclick="eliminarCita(\''+id+'\')'+luego+'">Eliminar</button>';
+  return h;
+}
+
+/* Un día (desde la semana o el mes): sus citas, y agregar una ahí mismo */
+function modalDia(f){
+  const citas = citasDelDia(f), abre = atiendeEse(f);
+  let h = '<div class="modal-enc"><div><h3>'+capital(fechaLarga(f))+'</h3><div class="nota">'+
+    (citas.length ? citas.length+' cita'+(citas.length>1?'s':'') : (abre ? 'Sin citas todavía.' : 'Ese día no atienden.'))+'</div></div>'+
+    '<button class="x" onclick="cerrarModal()" aria-label="Cerrar">×</button></div>';
+  for(const c of citas){
+    h += '<button class="dia-fila" style="--c:'+esc(colorProf(c.prof))+'" onclick="modalCita(\''+c.id+'\')">'+
+      '<span class="dia-h">'+hora12(aMin(c.hora))+'</span>'+
+      '<span class="dia-txt"><b>'+esc(c.cliente.nombre)+'</b><span class="nota">'+esc(c.servicios.map(nomServ).join(' + '))+', con '+esc(nombreProf(c.prof))+'</span></span>'+
+      '<span class="est '+c.estado+'">'+etiqueta(c.estado)+'</span></button>';
+  }
+  h += '<div style="height:12px"></div><button class="btn" onclick="cerrarModal();modalManual(\''+f+'\')">'+ICO.mas+'Agregar una cita este día</button>'+
+    '<button class="txt-btn" style="width:100%;margin-top:6px" onclick="cerrarModal();abrirDia(\''+f+'\')">Ver el día con horarios y pausas</button>';
+  modal(h);
 }
 
 /* Selector de arriba: Todas · Valeria · Melissa */
@@ -2659,13 +2870,13 @@ function agendaSemana(f){
   for(let i=0;i<7;i++){
     const d = sumarDias(ini, i), citas = citasDelDia(d), abre = atiendeEse(d), dd = deYMD(d);
     h += '<div class="sem-dia'+(d===hoyCR()?' hoy':'')+(abre?'':' cerrado')+'">'+
-      '<button class="sem-cab" onclick="abrirDia(\''+d+'\')" aria-label="Ver el '+fechaLarga(d).toLowerCase()+'">'+
+      '<button class="sem-cab" onclick="modalDia(\''+d+'\')" aria-label="Ver el '+fechaLarga(d).toLowerCase()+'">'+
         '<span class="sem-dow">'+DIAS_C[dd.getUTCDay()]+'</span><span class="sem-n">'+dd.getUTCDate()+'</span>'+
         '<span class="sem-cuenta">'+(citas.length ? citas.length+' cita'+(citas.length>1?'s':'') : (abre ? 'Libre' : 'No atienden'))+'</span>'+
       '</button>';
     for(const c of citas){
       const pend = c.estado === 'pendiente' || c.estado === 'apartada';
-      h += '<button class="sem-cita'+(pend?' pend':'')+'" style="--c:'+esc(colorProf(c.prof))+'" onclick="abrirDia(\''+d+'\')">'+
+      h += '<button class="sem-cita'+(pend?' pend':'')+'" style="--c:'+esc(colorProf(c.prof))+'" onclick="modalCita(\''+c.id+'\')">'+
         '<span class="sem-h">'+hora12(aMin(c.hora))+'</span>'+
         '<span class="sem-nm">'+esc((c.cliente.nombre||'').split(' ').slice(0,2).join(' '))+'</span>'+
         (todas ? '<span class="sem-pro">'+esc(nombreProf(c.prof))+'</span>' : '')+
@@ -2690,7 +2901,7 @@ function agendaMes(f){
     const fe = y+'-'+String(m+1).padStart(2,'0')+'-'+String(n).padStart(2,'0');
     const citas = citasDelDia(fe), abre = atiendeEse(fe);
     const pend = citas.filter(c => c.estado==='pendiente' || c.estado==='apartada').length;
-    h += '<button class="mes-dia'+(fe===hoyCR()?' hoy':'')+(abre?'':' cerrado')+'" onclick="abrirDia(\''+fe+'\')" '+
+    h += '<button class="mes-dia'+(fe===hoyCR()?' hoy':'')+(abre?'':' cerrado')+'" onclick="modalDia(\''+fe+'\')" '+
       'aria-label="'+capital(fechaLarga(fe))+': '+(citas.length ? citas.length+' citas' : (abre?'libre':'no atienden'))+'">'+
       '<span class="mes-n">'+n+'</span>'+
       '<span class="mes-pts">'+citas.slice(0,6).map(c=>'<i style="background:'+esc(colorProf(c.prof))+'"></i>').join('')+(citas.length>6?'<b>+'+(citas.length-6)+'</b>':'')+'</span>'+
@@ -2747,13 +2958,7 @@ function agendaDia(f){
         continue;
       }
       const c = it.c;
-      h += abreCita(c)+encCita(c)+detalleCita(c)+'<div class="acc">';
-      h += botonWA(c);
-      if(c.estado!=='completada') h += '<button class="mini" onclick="modalMover(\''+c.id+'\')">Mover</button>';
-      if(c.estado==='pendiente') h += '<button class="mini g" onclick="aprobar(\''+c.id+'\')">Aprobar</button>';
-      if(c.estado==='aprobada') h += '<button class="mini g" onclick="completar(\''+c.id+'\')">Marcar completada</button>';
-      if(c.estado!=='completada') h += '<button class="mini r" onclick="cancelar(\''+c.id+'\')">Cancelar</button>';
-      h += '</div></div>';
+      h += abreCita(c)+encCita(c)+detalleCita(c)+'<div class="acc">'+accionesCita(c, false)+'</div></div>';
     }
     h += '</div>';
   }
@@ -2765,9 +2970,23 @@ function completar(id){
   const c=S.citas.find(x=>x.id===id); if(!c) return;
   c.estado='completada'; c.completada=Date.now(); registrar(c,'Marcada completada'); guardar(); aviso('Sumada a ingresos'); pintar();
 }
+/* Cancelar: la cita queda en el historial pero libera el espacio y deja de contar en Ingresos */
 function cancelar(id){
   const c=S.citas.find(x=>x.id===id); if(!c) return;
-  c.estado='cancelada'; registrar(c,'Cancelada'); guardar(); aviso('Cita cancelada'); pintar();
+  const eraCompletada = c.estado === 'completada';
+  if(!confirm('¿Cancelar la cita de '+c.cliente.nombre+'?\n'+
+    (eraCompletada ? 'Ya estaba completada: deja de contar en Ingresos.' : 'El espacio queda libre en la agenda.'))) return;
+  c.estado='cancelada'; registrar(c, eraCompletada ? 'Cancelada (estaba completada, sale de Ingresos)' : 'Cancelada');
+  guardar(); aviso('Cita cancelada'); pintar();
+}
+/* Eliminar: se borra del todo (agenda e ingresos). Queda anotado en "Últimos cambios". */
+function eliminarCita(id){
+  const c=S.citas.find(x=>x.id===id); if(!c) return;
+  if(!confirm('¿Eliminar la cita de '+c.cliente.nombre+' del '+fechaLarga(c.fecha).toLowerCase()+'?\n'+
+    'Se borra de la agenda y de los ingresos. No se puede deshacer.')) return;
+  S.citas = S.citas.filter(x => x.id !== id);
+  anotar('Eliminó la cita de '+c.cliente.nombre+' ('+fechaCorta(c.fecha).toLowerCase()+', '+hora12(aMin(c.hora))+', con '+nombreProf(c.prof)+')');
+  guardar(); aviso('Cita eliminada'); pintar();
 }
 
 /* Chips para elegir profesional dentro de un modal */
@@ -2889,10 +3108,10 @@ function copiarAvisoCambio(id){
 }
 
 /* --- Cita manual (para las de siempre, que escriben directo) --- */
-function modalManual(){
+function modalManual(fecha){
   const p = partesCR();
   const pro = V.admin.prof !== 'todas' && prof(V.admin.prof) ? V.admin.prof : (profsActivas()[0]||{}).id;
-  V._man = { prof:pro, serv:[S.servicios[0].id], extra:false, fecha:p.ymd, hora:null, nombre:'', tel:'', err:'' };
+  V._man = { prof:pro, serv:[S.servicios[0].id], extra:false, fecha:fecha || p.ymd, hora:null, nombre:'', tel:'', err:'' };
   pintarManual();
 }
 function manPro(id){
@@ -2951,9 +3170,11 @@ function pintarManual(){
   modal(h);
 }
 function manServ(id){
-  const m = V._man, i = m.serv.indexOf(id);
-  if(i>=0){ if(m.serv.length>1) m.serv.splice(i,1); }
-  else if(m.serv.length<2) m.serv.push(id);
+  const m = V._man;
+  if(m.serv.length === 1 && m.serv[0] === id) return;   // siempre queda al menos un servicio
+  const r = aplicarReglas(m.serv, id);                    // las mismas reglas del menú que en la reserva
+  m.err = r.error || r.aviso || '';
+  if(!r.error) m.serv = r.sel;
   m.hora = null; pintarManual();
 }
 function guardarManual(){
@@ -3564,6 +3785,11 @@ function tic(){
     if(!S.citas) S.citas = [];
     if(!S.registro) S.registro = [];
     // versión anterior: los servicios no traían "admite diseño"; se toma del menú base
+    // versión anterior: los servicios no traían las reglas del menú (incluye, grupo, noCon)
+    for(const s of S.servicios){
+      const b = base.servicios.find(x => x.id === s.id);
+      if(b) for(const k of ['incluye','grupo','noCon']) if(s[k] === undefined && b[k] !== undefined) s[k] = b[k];
+    }
     for(const s of S.servicios) if(s.admiteDisenio === undefined){
       const b = base.servicios.find(x => x.id === s.id);
       s.admiteDisenio = b ? b.admiteDisenio : true;
