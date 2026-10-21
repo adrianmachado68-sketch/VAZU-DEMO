@@ -6,9 +6,24 @@
 <meta name="color-scheme" content="light only">
 <title>VAZÚ Nails Beauty</title>
 <meta name="description" content="Manicura y pedicura en San Antonio de Belén, Heredia. Reservá tu cita en línea.">
+<!-- Vista previa al compartir el link (WhatsApp, Instagram, Facebook).
+     Dirección de GitHub Pages: https://adrianmachado68-sketch.github.io/VAZU-DEMO/ -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="VAZÚ Nails Beauty">
+<meta property="og:description" content="Manicura y pedicura en San Antonio de Belén, Heredia. Reservá tu cita en línea.">
+<meta property="og:url" content="https://adrianmachado68-sketch.github.io/VAZU-DEMO/">
+<meta property="og:image" content="https://adrianmachado68-sketch.github.io/VAZU-DEMO/Galeria/compartir.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Uñas en negro con brillo, nude perlado y animal print, de VAZÚ Nails Beauty">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://adrianmachado68-sketch.github.io/VAZU-DEMO/Galeria/compartir.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="icono-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icono-512.png">
+<link rel="apple-touch-icon" href="icono-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=Jost:wght@200;300;400;500&family=Lexend+Giga:wght@200;300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500&family=Lexend+Giga:wght@200;300&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    VAZÚ Nails Beauty — demo de agenda (adaptada de la de NÄS)
@@ -36,8 +51,8 @@
   --alerta:#955B3C;     /* terracota oscurecida: 5:1 sobre el fondo */
 
   /* VAZÚ es sans, fina y espaciada. Nada de serif. */
-  --disp:'Jost','Century Gothic',Futura,'Segoe UI',system-ui,-apple-system,sans-serif;
-  --sans:'Jost','Century Gothic',Futura,'Segoe UI',system-ui,-apple-system,sans-serif;
+  --disp:'Albert Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  --sans:'Albert Sans','Segoe UI',system-ui,-apple-system,sans-serif;
 
   --r:18px;
   --r-sm:12px;
@@ -491,6 +506,12 @@ button.ing-fila:hover .v{color:var(--oliva-prof)}
 .pie .adm{background:transparent;border:0;color:#9A9B88;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:6px 10px}
 .aviso-flotante{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;z-index:70;background:var(--texto);color:var(--fondo);font-size:12px;letter-spacing:.04em;padding:11px 18px;border-radius:30px;box-shadow:0 8px 24px rgba(55,56,44,.3);opacity:0;transition:opacity .25s,bottom .25s;pointer-events:none}
 .aviso-flotante.ver{opacity:1;bottom:110px}
+/* en el panel, el aviso va abajo a la izquierda, en la misma franja del botón "Cita manual":
+   no tapa el encabezado ni los filtros, no recibe toques y se va solo */
+body:not(.pub) .aviso-flotante{left:16px;transform:none;bottom:calc(30px + env(safe-area-inset-bottom));max-width:calc(100% - 230px);
+  border-radius:18px;line-height:1.35;letter-spacing:.01em;font-size:13px;transition:opacity .25s}
+body:not(.pub) .aviso-flotante.ver{bottom:calc(30px + env(safe-area-inset-bottom))}
+@media(min-width:801px){ body:not(.pub) .aviso-flotante{left:50%;transform:translateX(-50%);max-width:420px} }
 .vacio{text-align:center;padding:34px 20px;color:var(--lectura);font-size:13px;line-height:1.7}
 .vacio .ic{width:40px;height:40px;margin:0 auto 12px;border-radius:50%;border:1px solid var(--linea);display:flex;align-items:center;justify-content:center}
 .vacio .ic svg{width:17px;height:17px;stroke:var(--oliva);fill:none;stroke-width:1.2}
@@ -505,6 +526,17 @@ button.ing-fila:hover .v{color:var(--oliva-prof)}
 .fila-h .quitar{border:0;background:transparent;color:#9A9B88;font-size:17px;padding:4px 6px;line-height:1}
 .dia-cfg{border-bottom:1px solid var(--linea);padding:13px 0}
 .dia-cfg:last-child{border-bottom:0}
+.dia-res{display:none;width:100%;align-items:center;gap:10px;border:0;background:none;padding:2px 0;text-align:left;font-size:14px;color:var(--lectura);line-height:1.4}
+.dia-res b{font-weight:400;color:var(--texto)}
+.dia-res span{flex:1}
+.dia-res svg{width:16px;height:16px;flex:none;color:var(--oliva-prof);transition:transform .2s}
+@media(max-width:700px){
+  .dia-cfg.plegable .dia-res{display:flex;min-height:40px}
+  .dia-cfg.plegable:not(.abierto) .dia-cuerpo{display:none}
+  .dia-cfg.plegable.abierto .dia-res svg{transform:rotate(90deg)}
+  .dia-cfg.plegable .dia-cuerpo{padding-top:8px}
+  .dia-cfg.plegable .nom > span:first-child{visibility:hidden}
+}
 .dia-cfg .nom{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--oliva-prof);margin-bottom:8px;display:flex;align-items:center;gap:8px}
 
 /* ---------- profesionales ---------- */
@@ -549,6 +581,15 @@ textarea.inp{resize:vertical;min-height:76px;line-height:1.5}
 
 /* ---------- panel por profesional ---------- */
 .marco.muy-ancho{max-width:1040px}
+/* panel en computadora: más ancho y en dos columnas donde hay contenido para llenarlas */
+@media(min-width:1000px){
+  .marco.ancho,.marco.muy-ancho{max-width:1160px}
+  .marco.ancho .fab,.marco.muy-ancho .fab{right:calc(50% - 580px + 18px)}
+  .pan-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 32px;align-items:start}
+  .pan-rejilla{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+  .pan-rejilla > .cita{margin-bottom:0}
+}
+@media(min-width:1000px) and (max-width:1180px){ .marco.ancho .fab,.marco.muy-ancho .fab{right:18px} }
 .filtro-pro{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
 .filtro-pro .chip{display:inline-flex;align-items:center;gap:7px}
 .cita.de-pro{border-left:3px solid var(--c,var(--oliva))}
@@ -619,6 +660,25 @@ select.inp.sel-h{width:auto;min-width:0;flex:1 1 0;padding:9px 26px 9px 10px;fon
   .galeria button:hover img{transform:scale(1.03)}
 }
 
+/* ---------- panel: mismo criterio que la parte pública ----------
+   Etiquetas y botones en minúscula normal (nada de mayúsculas espaciadas)
+   y tarjetas planas: borde fino, sin sombra. */
+body:not(.pub) *{text-transform:none!important}
+body:not(.pub) :is(.marca .s,.enc .der,.paso-tit .num,.tag,.rot,.cal .dow,.campo label,.btn,.dep .et,.sinpe .k,.copiar,.est,.tab,.sem-dow,.mini,
+  .kpi .k,.ing-rango label,.nav button,.sec-tit .k,.pie .adm,.sello-h,.portada .sub,.dia-cfg .nom,.pro-tag,.consultar,.col-enc .nm,.mini-et,.vista,.fecha-btn){letter-spacing:.01em}
+body:not(.pub) .rot{font-size:13px;margin:24px 0 10px}
+body:not(.pub) :is(.kpi .k,.campo label,.dep .et,.sinpe .k,.mini-et,.ing-rango label){font-size:12.5px}
+body:not(.pub) :is(.tag,.est,.pro-tag,.consultar,.cal .dow,.sem-dow,.marca .s,.enc .der,.paso-tit .num){font-size:12px}
+body:not(.pub) :is(.tab,.nav button,.pie .adm,.sello-h,.sec-tit .k,.portada .sub){font-size:13px}
+body:not(.pub) :is(.mini,.copiar){font-size:13.5px}
+body:not(.pub) .btn{font-size:15px}
+body:not(.pub) .dia-cfg .nom{font-size:15px}
+body:not(.pub) .col-enc .nm{font-size:15px}
+body:not(.pub) :is(.marco,.card,.card.sel,.serv,.serv.sel,.add,.dia,.dia.sel,.hora,.dep,.ok-sello,.cita,.cita.urg,.kpi,.kpi.on,.destacado,
+  .galeria img,.acor,.reco,.mapa,.pro,.pro.sel,.btn,.btn.wa){box-shadow:none}
+body:not(.pub) .kpi.on{box-shadow:inset 0 0 0 1px var(--oliva-prof)}
+body:not(.pub) .cita.urg{border-color:rgba(149,91,60,.55)}
+
 /* ============================================================
    PARTE PÚBLICA (lo que ve la clienta). Todo vive bajo body.pub:
    el panel del estudio conserva sus propios estilos.
@@ -636,7 +696,7 @@ body.pub{
   --error:#8F4F33;      /* solo errores. 5,9:1 */
   --hilo:#A8A98D;       /* la línea fina del menú (decorativa) */
   --wordmark:#E8E3D5;   /* crema: solo el logo grande sobre el oliva */
-  --ancha:'Lexend Giga','Jost',system-ui,sans-serif;
+  --ancha:'Lexend Giga',system-ui,sans-serif;
   --leer:'Albert Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
   background:var(--frio);background-image:none;color:var(--tinta);
   font-family:var(--leer);font-weight:400;font-size:15px;line-height:1.55;
@@ -676,6 +736,13 @@ body.pub .v-red.grande{margin-top:14px;min-height:76px;padding:16px 18px;backgro
 .v-red.grande .v-red-ico{width:46px;height:46px;background:var(--frio)}
 .v-red.grande b{font-family:var(--ancha);font-weight:300;font-size:17px;letter-spacing:.01em}
 .v-red.grande small{color:var(--tinta);font-size:13.5px}
+/* Seguinos: las tres redes en fila; en celular, ícono arriba y nombre abajo */
+.v-sub-red{font-family:var(--ancha);font-weight:300;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--gris);margin:26px 0 0}
+.v-redes.v-tres{grid-template-columns:repeat(3,1fr)}
+@media(max-width:559px){
+  body.pub .v-tres .v-red{flex-direction:column;justify-content:center;text-align:center;gap:8px;padding:14px 6px;min-height:96px}
+  .v-tres .v-red small{display:none}
+}
 @media(hover:hover){
   body.pub .v-red:hover{border-color:var(--accion);background:rgba(168,169,141,.12)}
   body.pub .v-red.grande:hover{background:#9C9D80;border-color:#9C9D80}
@@ -876,6 +943,7 @@ body.pub .v-sinpe .v-meta{color:var(--tinta)}
 .v-acor-txt p{margin:0 0 8px}
 .v-pie{margin:56px 20px 0;padding:22px 0 30px;border-top:1px solid var(--hilo);font-size:13.5px;color:var(--gris);display:grid;gap:12px}
 .v-pie p{margin:0;line-height:1.7}
+.v-pie .v-derechos{font-size:12px;letter-spacing:.02em}
 .v-adm{justify-self:start;background:none;border:0;padding:6px 0;font-size:13px;color:var(--gris);text-decoration:underline;text-decoration-color:var(--hilo);text-underline-offset:3px}
 body.pub .v-adm{color:var(--gris)}
 
@@ -1078,7 +1146,7 @@ function datosIniciales(){
        No suman al total ni al depósito, pero sí a la duración. */
     adicionales:[
       // foto: solo cuando corresponde de verdad al servicio. TODO pedir a VAZÚ una foto por servicio.
-      {id:'x1', nombre:'Relieves, aerógrafo y efectos', precio:null, min:20, todo:true, foto:'Galeria/unas 5.jpg', // TODO duración estimada
+      {id:'x1', nombre:'Relieves, aerógrafo y efectos', precio:null, min:20, todo:true, foto:'Galeria/unas-5.jpg', // TODO duración estimada
        desc:'Los relieves, efectos aurora/metálicos y aerógrafo se cotizan por separado, ya que el costo depende del diseño y la cantidad de uñas en las que se realicen. Te recomendamos consultarlo previamente con tu manicurista para brindarte el precio exacto.'}
     ],
     config:{
@@ -1159,8 +1227,10 @@ function guardar(){
 }
 function cargar(){
   try{
-    const t = localStorage.getItem(LLAVE);
+    let t = localStorage.getItem(LLAVE);
     if(!t) return null;
+    // las fotos se renombraron ("Galeria/unas 5.jpg" pasó a "Galeria/unas-5.jpg"): se corrige lo guardado
+    t = t.replace(/Galeria\/[Uu]nas (\d)\.jpg/g, 'Galeria/unas-$1.jpg');
     const d = JSON.parse(t);
     if(!d || !d.servicios || !d.config || !d.profesionales) return null;
     return d;
@@ -1185,8 +1255,8 @@ const profsActivas = () => S.profesionales.filter(p=>p.activo);
 const catNombre = id => (CATEGORIAS.find(c=>c.id===id) || {}).n || '';
 const nombreProf = id => (prof(id) || {}).nombre || 'Sin asignar';
 const colorProf  = id => (prof(id) || {}).color || '#A8A98D';
-/* Foto de la profesional: "valeria.jpg", "melissa.jpg"... en la carpeta de la página (o p.foto si se define) */
-const fotoProf = p => p.foto || p.nombre.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,'-')+'.jpg';
+/* Foto de la profesional: "Galeria/valeria.jpg", "Galeria/melissa.jpg"... (o p.foto si se define) */
+const fotoProf = p => p.foto || 'Galeria/'+p.nombre.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,'-')+'.jpg';
 
 /* Nombre para mostrar de un servicio (de la lista o congelado en una cita).
    Si hay dos servicios con el mismo nombre (el esmaltado de manos y el de
@@ -1516,6 +1586,8 @@ const ICO = {
   clip:'<svg viewBox="0 0 24 24"><path d="M20 11l-8.5 8.5a4.5 4.5 0 01-6.4-6.4L13 4.8a3 3 0 014.3 4.2l-8 8a1.5 1.5 0 01-2.2-2.1l7.4-7.4"/></svg>',
   wa:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 11.8a8 8 0 01-11.9 7L4 20l1.3-3.9A8 8 0 1120 11.8z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5"/></svg>',
   ig:'<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>',
+  fb:'<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M13.5 20.5V13h2.6l.4-3h-3V8.3c0-.9.3-1.5 1.6-1.5h1.5V4.1c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8V10H8.2v3h2.5v7.5z"/></svg>',
+  tt:'<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3.5v11.2a3.7 3.7 0 11-3.7-3.7"/><path d="M14 3.5c.4 2.7 2.3 4.5 5.2 4.7"/></svg>',
   sello:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.2"/><path d="M7.5 12.3l3.2 3.2 5.8-6.5"/></svg>',
   mas:'<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
   hoja:'<svg viewBox="0 0 24 24"><path d="M20 4C10 5 5 9.5 5 15.5c0 2 .6 3.5 1.5 4.5C8 17 11 13.5 17 11"/><path d="M6.5 20C4 20 3 18 3 18"/></svg>',
@@ -1532,15 +1604,15 @@ const ICO = {
 
 // TODO galería: para agregar más trabajos, dejá la foto dentro de la carpeta
 // "Galeria" y agregá el nombre del archivo a esta lista (respetando
-// mayúsculas: en el hosting "Unas 1.jpg" y "unas 1.jpg" son distintos).
+// minúsculas y sin espacios, como "unas-8.jpg": en el hosting las mayúsculas cuentan).
 // Las dos primeras son las del damero de la portada.
 const GALERIA = [
-  {img:'Galeria/unas 2.jpg', alt:'Efecto aurora verde con destello dorado'},
-  {img:'Galeria/unas 3.jpg', alt:'Verde oliva con efecto mármol en tonos crema y terracota'},
-  {img:'Galeria/Unas 4.jpg', alt:'Efecto ágata en verde azulado, terracota y café, con línea dorada'},
-  {img:'Galeria/unas 5.jpg', alt:'Relieves en vino y rosado satinado'},
-  {img:'Galeria/unas 6.jpg', alt:'Negro con brillo, nude perlado y manchas tipo animal print'},
-  {img:'Galeria/unas 7.jpg', alt:'Francés blanco en uña almendra con lámina dorada'}
+  {img:'Galeria/unas-2.jpg', alt:'Efecto aurora verde con destello dorado'},
+  {img:'Galeria/unas-3.jpg', alt:'Verde oliva con efecto mármol en tonos crema y terracota'},
+  {img:'Galeria/unas-4.jpg', alt:'Efecto ágata en verde azulado, terracota y café, con línea dorada'},
+  {img:'Galeria/unas-5.jpg', alt:'Relieves en vino y rosado satinado'},
+  {img:'Galeria/unas-6.jpg', alt:'Negro con brillo, nude perlado y manchas tipo animal print'},
+  {img:'Galeria/unas-7.jpg', alt:'Francés blanco en uña almendra con lámina dorada'}
 ];
 
 /* Navegación de la portada, en el orden en que aparecen las secciones */
@@ -1603,16 +1675,26 @@ const punto = color => '<span class="v-punto" style="background:'+esc(color)+'">
 const ICO_X = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 
 /* Redes: tarjetas grandes y fáciles de tocar, con el ícono en un círculo y lo que pasa al tocar */
+// Facebook y TikTok del estudio
+const URL_FB = 'https://www.facebook.com/profile.php?id=61565504586617';
+const URL_TT = 'https://www.tiktok.com/@vazunailsbeauty';
 function tarjetaRed(tipo, titulo, detalle, variante){
-  const ig = tipo === 'ig';
-  return '<a class="v-red'+(variante?' '+variante:'')+'" href="'+(ig ? urlIG() : enlaceWA(saludoWA()))+'" target="_blank" rel="noopener">'+
-    '<span class="v-red-ico" aria-hidden="true">'+(ig ? ICO.ig : ICO.wa)+'</span>'+
-    '<span class="v-red-txt"><b>'+titulo+'</b><small>'+detalle+'</small></span>'+
-    '<span class="v-oculto"> (se abre en '+(ig ? 'Instagram' : 'WhatsApp')+')</span></a>';
+  const r = {wa:[enlaceWA(saludoWA()), ICO.wa, 'WhatsApp'], ig:[urlIG(), ICO.ig, 'Instagram'],
+             fb:[URL_FB, ICO.fb, 'Facebook'], tt:[URL_TT, ICO.tt, 'TikTok']}[tipo];
+  return '<a class="v-red'+(variante?' '+variante:'')+'" href="'+r[0]+'" target="_blank" rel="noopener">'+
+    '<span class="v-red-ico" aria-hidden="true">'+r[1]+'</span>'+
+    '<span class="v-red-txt"><b>'+titulo+'</b>'+(detalle ? '<small>'+detalle+'</small>' : '')+'</span>'+
+    '<span class="v-oculto"> (se abre en '+r[2]+')</span></a>';
 }
 const redes = () => '<div class="v-redes">'+
   tarjetaRed('wa', 'WhatsApp', 'Escribinos al '+esc(S.config.telefono))+
   tarjetaRed('ig', 'Instagram', '@'+esc(S.config.instagram))+
+'</div>';
+/* Visitanos: escribir por WhatsApp y, aparte, todas las redes juntas */
+const seguinos = () => '<h3 class="v-sub-red">Síguenos</h3><div class="v-redes v-tres">'+
+  tarjetaRed('ig', 'Instagram', '@'+esc(S.config.instagram))+
+  tarjetaRed('fb', 'Facebook', 'VAZÚ Nails Beauty')+
+  tarjetaRed('tt', 'TikTok', '@vazunailsbeauty')+
 '</div>';
 
 function verInicio(){
@@ -1697,7 +1779,8 @@ function verInicio(){
   h += '<section class="v-sec" id="contacto"><h2 class="v-tit">Visitanos</h2>'+
     '<p class="v-dir">'+esc(S.config.direccion)+'</p>'+
     '<p class="v-bajada">La dirección exacta te la enviamos al confirmar tu cita.</p>'+
-    redes()+'</section>';
+    '<div class="v-redes">'+tarjetaRed('wa', 'WhatsApp', 'Escribinos al '+esc(S.config.telefono))+'</div>'+
+    seguinos()+'</section>';
 
   h += pie();
 
@@ -1776,7 +1859,7 @@ function aviso(txt){
   el.textContent = txt;
   el.classList.add('ver');
   clearTimeout(aviso._t);
-  aviso._t = setTimeout(()=>el.classList.remove('ver'), 2200);
+  aviso._t = setTimeout(()=>el.classList.remove('ver'), 2500);
 }
 
 function modal(html){
@@ -1807,10 +1890,14 @@ function pasosVisibles(){
 /* Encabezado del recorrido: la marca, en qué paso va (es una secuencia
    real, por eso lleva número) y la salida. La línea de abajo es el avance. */
 function encReserva(){
+  // Se muestra "Paso N" sin total: el paso de diseño aparece o no según el servicio,
+  // y un total que cambia a mitad del camino confunde. La barra cuenta siempre ese paso.
   const l = pasosVisibles(), i = l.indexOf(V.paso);
-  const avance = V.paso >= 7 ? 100 : Math.round(((i < 0 ? l.length : i+1) / l.length) * 100);
+  const total = l.length + (l.includes(PASO_DISENIO) ? 0 : 1);
+  const hechos = i < 0 ? total : i + 1 + (l.includes(PASO_DISENIO) || V.paso < PASO_DISENIO ? 0 : 1);
+  const avance = V.paso >= 7 ? 100 : Math.round((hechos / total) * 100);
   return '<header class="v-enc"><span class="v-marca">VAZÚ</span>'+
-    (i >= 0 ? '<span class="v-paso">Paso '+(i+1)+' de '+l.length+'</span>' : '')+
+    (i >= 0 ? '<span class="v-paso">Paso '+(i+1)+'</span>' : '')+
     '<button class="v-x" onclick="irInicio()" aria-label="Salir de la reserva">'+ICO_X+'</button>'+
     '<span class="v-prog" aria-hidden="true"><i style="width:'+avance+'%"></i></span></header>';
 }
@@ -1833,11 +1920,10 @@ function verCliente(){
 }
 
 function pie(){
+  // el contacto ya está en Visitanos: el pie queda solo con el panel y los derechos
   return '<footer class="v-pie">'+
-    '<p>VAZÚ Nails Beauty<br>'+esc(S.config.direccion)+'</p>'+
-    '<p><a href="'+enlaceWA(saludoWA())+'" target="_blank" rel="noopener">WhatsApp '+esc(S.config.telefono)+'</a><br>'+
-    '<a href="'+urlIG()+'" target="_blank" rel="noopener">@'+esc(S.config.instagram)+'</a></p>'+
-    '<button class="v-adm" onclick="pedirPin()">Panel del estudio</button></footer>';
+    '<button class="v-adm" onclick="pedirPin()">Panel del estudio</button>'+
+    '<p class="v-derechos">© '+hoyCR().slice(0,4)+' VAZÚ Nails Beauty. Todos los derechos reservados.</p></footer>';
 }
 
 /* --- Paso 1: con quién. Dos mitades, como dos puestos. --- */
@@ -2468,7 +2554,7 @@ function cuandoTxt(t){ const p = partesCR(new Date(t)); return fechaCorta(p.ymd)
 /* Historial de una cita: quién la aprobó, rechazó, movió... */
 function registrar(c, accion){
   (c.historial = c.historial || []).push({a:accion, q:quienSoy(), t:Date.now()});
-  anotar(accion+' · cita de '+c.cliente.nombre+' con '+nombreProf(c.prof));
+  anotar(accion+': cita de '+c.cliente.nombre+' con '+nombreProf(c.prof));
 }
 /* Registro general del panel (horarios, servicios, configuración) */
 function anotar(texto){
@@ -2479,7 +2565,7 @@ function anotar(texto){
 function histHTML(c){
   if(!c.historial || !c.historial.length) return '';
   return '<div class="hist">'+c.historial.map(x =>
-    '<div>'+esc(x.a)+(x.q?' por '+esc(x.q):'')+' · '+cuandoTxt(x.t)+'</div>').join('')+'</div>';
+    '<div>'+esc(x.a)+(x.q?' por '+esc(x.q):'')+', '+cuandoTxt(x.t)+'</div>').join('')+'</div>';
 }
 function salirAdmin(){ V.pantalla = 'inicio'; window.scrollTo(0,0); pintar(); }
 function tabAdmin(t){ V.admin.tab = t; window.scrollTo(0,0); pintar(); }
@@ -2643,8 +2729,8 @@ function cuenta(hasta){
 function encCita(c, extra){
   return '<div class="cita-enc"><div class="h">'+hora12(aMin(c.hora)).replace(' ','<span style="font-size:10.5px;letter-spacing:.06em"> ')+'</span></div>'+
     '<div style="flex:1;min-width:0"><div class="nm">'+esc(c.cliente.nombre)+'</div>'+
-    '<div class="sub"><span class="pro-tag" style="--c:'+esc(colorProf(c.prof))+'">'+esc(nombreProf(c.prof))+'</span> · '+
-      fechaCorta(c.fecha)+' · '+dur(c.duracion)+' · '+(c.origen==='manual'?'a mano':'por el link')+'</div></div>'+
+    '<div class="sub"><span class="pro-tag" style="--c:'+esc(colorProf(c.prof))+'">'+esc(nombreProf(c.prof))+'</span> '+
+      fechaCorta(c.fecha)+', '+dur(c.duracion)+', '+(c.origen==='manual'?'a mano':'por el link')+'</div></div>'+
     '<div class="lado"><span class="est '+c.estado+'">'+etiqueta(c.estado)+'</span>'+
       (fueraDeHorario(c) ? '<span class="tag aviso" title="Su horario cambió después de agendarla">fuera de horario</span>' : '')+
       (extra||'')+'</div></div>';
@@ -2730,7 +2816,7 @@ function detalleCita(c){
     if(S.config.pideDeposito) h += '<div class="lin sub"><span>'+(c.origen==='manual'?'Cita a mano, sin depósito':'Sin depósito')+'</span><span class="v">'+col(0)+'</span></div>';
   }
   h += '<div class="sep"></div><div class="nota">'+esc(c.cliente.tel||'sin teléfono')+
-       (c.cliente.email?' · '+esc(c.cliente.email):'')+'</div>';
+       (c.cliente.email?'<br>'+esc(c.cliente.email):'')+'</div>';
   h += histHTML(c);
   return h+'</div>';
 }
@@ -2746,8 +2832,9 @@ function tabSolicitudes(){
   const apart = S.citas.filter(c=>c.estado==='apartada' && bloquea(c) && deVista(c)).sort((a,b)=>a.apartadoHasta-b.apartadoHasta);
   let h = '';
 
-  h += '<div class="rot">Esperando tu decisión'+(pend.length?' · '+pend.length:'')+'</div>';
+  h += '<div class="rot">Esperando tu decisión'+(pend.length?' ('+pend.length+')':'')+'</div>';
   if(!pend.length) h += vacio('Nada pendiente. Cuando alguien reserve por el link, aparece acá.','sello');
+  h += '<div class="pan-rejilla">';
   for(const c of pend){
     h += abreCita(c)+encCita(c)+detalleCita(c);
     if(c.deposito > 0){
@@ -2764,11 +2851,13 @@ function tabSolicitudes(){
          '<button class="mini r" onclick="rechazar(\''+c.id+'\')">Rechazar</button></div>';
     h += '</div>';
   }
+  h += '</div>';
 
   // con el depósito apagado esta sección solo aparece si quedó alguna apartada de antes
   if(S.config.pideDeposito || apart.length){
-    h += '<div class="rot">Apartadas, esperando el depósito'+(apart.length?' · '+apart.length:'')+'</div>';
+    h += '<div class="rot">Apartadas, esperando el depósito'+(apart.length?' ('+apart.length+')':'')+'</div>';
     if(!apart.length) h += vacio('Ningún espacio apartado en este momento.','reloj');
+    h += '<div class="pan-rejilla">';
     for(const c of apart){
       const extra = '<div class="reloj" style="padding:7px 10px;gap:8px"><div><div class="t" style="font-size:18px" data-cuenta="'+c.id+'">'+cuenta(c.apartadoHasta)+'</div></div></div>';
       h += abreCita(c,'urg')+encCita(c, extra)+detalleCita(c)+
@@ -2777,12 +2866,13 @@ function tabSolicitudes(){
         '<button class="mini" onclick="modalMover(\''+c.id+'\')">Mover</button>'+
         '<button class="mini r" onclick="liberar(\''+c.id+'\')">Liberar ahora</button></div></div>';
     }
+    h += '</div>';
   }
   return h;
 }
 function verCaptura(id){
   const c = S.citas.find(x=>x.id===id); if(!c || !c.captura) return;
-  modal('<div class="modal-enc"><div><h3>Comprobante</h3><div class="nota">'+esc(c.cliente.nombre)+' · '+col(c.deposito)+'</div></div>'+
+  modal('<div class="modal-enc"><div><h3>Comprobante</h3><div class="nota">'+esc(c.cliente.nombre)+', '+col(c.deposito)+'</div></div>'+
     '<button class="x" onclick="cerrarModal()">×</button></div>'+
     '<img src="'+c.captura+'" style="width:100%;border-radius:14px;border:1px solid var(--linea)">');
 }
@@ -3010,7 +3100,7 @@ function agendaDia(f){
     h += '<div class="col" style="--c:'+esc(p.color)+'"><div class="col-enc"><span class="bolita"></span><span class="nm">'+esc(p.nombre)+'</span>'+
       '<span class="nota">'+(especial?'<span class="tag" style="margin-bottom:3px;display:inline-block">horario especial</span><br>':'')+
       (cerrado ? 'No atiende este día'
-        : bloques.map(b=>hora12(aMin(b.ini))+' a '+hora12(aMin(b.fin))).join(' · ')+'<br>'+(ocupado ? dur(ocupado)+' ocupados' : 'Agenda libre'))+'</span></div>';
+        : bloques.map(b=>hora12(aMin(b.ini))+' a '+hora12(aMin(b.fin))).join(', ')+'<br>'+(ocupado ? dur(ocupado)+' ocupados' : 'Agenda libre'))+'</span></div>';
     if(!cerrado) h += '<button class="mini" style="margin:-2px 0 12px" onclick="modalPausa({prof:\''+p.id+'\',fecha:\''+f+'\'})">'+ICO.reloj.replace('<svg','<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5"')+'Bloquear este rato</button>';
 
     /* línea del día: citas y pausas, por hora. Sin pausas configuradas no aparece ninguna. */
@@ -3088,8 +3178,8 @@ function pintarMover(){
   const aptas = profsActivas().filter(p => c.servicios.every(s => { const x = servicio(s.id); return !x || hace(p, x); }));
 
   let h = '<div class="modal-enc"><div><h3>Mover cita</h3>'+
-    '<div class="nota">'+esc(c.cliente.nombre)+' · '+(m.dur && m.dur !== c.duracion ? 'con la duración nueva: ' : '')+dur(duracion)+
-    ' · queda como <b style="font-weight:400">'+etiqueta(c.estado).toLowerCase()+'</b></div></div>'+
+    '<div class="nota">'+esc(c.cliente.nombre)+', '+(m.dur && m.dur !== c.duracion ? 'con la duración nueva: ' : '')+dur(duracion)+
+    '. Queda como <b style="font-weight:400">'+etiqueta(c.estado).toLowerCase()+'</b>.</div></div>'+
     '<button class="x" onclick="cerrarModal()">×</button></div>';
   if(aptas.length > 1) h += '<div class="campo"><label>Con quién</label>'+chipsPro(m.prof, 'moverPro', aptas)+'</div>';
   h += '<div class="campo"><label>Día</label><input class="inp" type="date" value="'+m.fecha+'" min="'+hoyCR()+'" onchange="V._mover.fecha=this.value;V._mover.hora=null;pintarMover()"></div>';
@@ -3221,7 +3311,7 @@ function pintarManual(){
   for(const a of S.adicionales){
     h += '<button class="chip '+(m.extra?'on':'')+'" onclick="V._man.extra=!V._man.extra;V._man.hora=null;pintarManual()">+ '+esc(a.nombre)+'</button>';
   }
-  h += '</div><div class="nota" style="margin-top:7px">'+col(precio)+(m.extra?' + extras a consultar':'')+' · '+dur(minutos)+' · depósito no requerido</div></div>';
+  h += '</div><div class="nota" style="margin-top:7px">'+col(precio)+(m.extra?' + extras a consultar':'')+', '+dur(minutos)+', sin depósito</div></div>';
 
   h += '<div class="campo"><label>Nombre</label><input class="inp" id="man-nombre" value="'+esc(m.nombre)+'" oninput="V._man.nombre=this.value" autocomplete="name"></div>';
   h += '<div class="dos"><div class="campo" style="flex:1"><label>Día</label>'+
@@ -3231,7 +3321,7 @@ function pintarManual(){
 
   h += '<div class="campo"><label>Hora'+(pr?' en la agenda de '+esc(pr.nombre):'')+'</label>';
   h += '<div class="horas">';
-  if(ahoraLibre) h += '<button class="hora '+(m.hora==='ya'?'sel':'')+'" style="grid-column:span 3" onclick="V._man.hora=\'ya\';pintarManual()">Ahora mismo · '+hora12(ahoraMin)+'</button>';
+  if(ahoraLibre) h += '<button class="hora '+(m.hora==='ya'?'sel':'')+'" style="grid-column:span 3" onclick="V._man.hora=\'ya\';pintarManual()">Ahora mismo, '+hora12(ahoraMin)+'</button>';
   for(const x of libres) h += '<button class="hora '+(m.hora===x?'sel':'')+'" onclick="V._man.hora='+x+';pintarManual()">'+hora12(x)+'</button>';
   h += '</div>';
   if(!libres.length && !ahoraLibre) h += '<div class="nota-caja" style="margin-top:8px">'+esc(pr?pr.nombre:'')+' no tiene un espacio de '+dur(minutos)+' libre ese día. Podés mover otra cita, probar con otra profesional o cambiar su horario en Configuración.</div>';
@@ -3269,7 +3359,7 @@ function guardarManual(){
     historial:[{a:'Creada a mano', q:quienSoy(), t:Date.now()}]
   });
   guardar(); cerrarModal();
-  anotar('Creó una cita a mano · '+m.nombre.trim()+' con '+nombreProf(m.prof)+', '+fechaCorta(m.fecha)+' '+hora12(inicio));
+  anotar('Creó una cita a mano: '+m.nombre.trim()+' con '+nombreProf(m.prof)+', '+fechaCorta(m.fecha)+' '+hora12(inicio));
   guardar();
   V.admin.tab='agenda'; V.admin.fecha=m.fecha;
   aviso('Cita guardada'); pintar();
@@ -3280,9 +3370,11 @@ function tabConfig(){
   if(!prof(V.admin.cfgProf)) V.admin.cfgProf = S.profesionales[0].id;
   const pc = prof(V.admin.cfgProf);
 
+  // en computadora: horarios a la izquierda; servicios y ajustes a la derecha
+  h += '<div class="pan-cols"><div class="pan-col">';
   /* Profesionales */
   h += '<div class="rot">Profesionales</div>';
-  h += '<div class="card"><div class="nota" style="margin-bottom:6px">Color · nombre · si recibe citas por el link.</div>';
+  h += '<div class="card"><div class="nota" style="margin-bottom:6px">Color, nombre y si recibe citas por el link.</div>';
   S.profesionales.forEach((p,i)=>{
     h += '<div class="fila-pro">'+
       '<input type="color" value="'+esc(p.color)+'" title="Color de '+esc(p.nombre)+'" onchange="setPro('+i+',\'color\',this.value)">'+
@@ -3308,7 +3400,7 @@ function tabConfig(){
   h += '<div class="nota" style="margin-top:10px">Ningún servicio se parte entre bloques ni atraviesa una pausa: tiene que caber entero en un bloque.</div>';
   h += '</div>';
 
-  h += '<div class="rot">Excepciones por fecha · '+esc(pc.nombre)+'</div>';
+  h += '<div class="rot">Excepciones por fecha de '+esc(pc.nombre)+'</div>';
   h += '<div class="card"><div class="nota" style="margin-bottom:10px">Un día que no sigue la semana normal: '+
     '"este sábado trabajo de 10 a 2" o "este martes no trabajo". Ese día manda la excepción; la semana normal no cambia.</div>';
   h += '<div class="fila-h" style="flex-wrap:wrap"><input class="inp" type="date" id="f-exc" min="'+hoyCR()+'" style="flex:1 1 150px;width:auto">'+
@@ -3319,19 +3411,20 @@ function tabConfig(){
   for(const f of exc) h += editorDia('e:'+f, capital(fechaLarga(f)), pc.excepciones[f], {quitar:true});
   h += '</div>';
 
-  h += '<div class="rot">Pausas en fechas puntuales · '+esc(pc.nombre)+'</div>';
+  h += '<div class="rot">Pausas en fechas puntuales de '+esc(pc.nombre)+'</div>';
   h += '<div class="card"><div class="nota" style="margin-bottom:10px">Un rato apartado en un día específico, sin cambiar el resto del horario: '+
     'un trámite, un almuerzo improvisado. También se crean desde la Agenda con "Bloquear este rato".</div>';
   const pz = Object.keys(pc.pausas||{}).filter(f => f >= hoyCR() && pc.pausas[f].length).sort();
   if(!pz.length) h += '<div class="nota" style="margin-bottom:10px">Sin pausas puntuales.</div>';
   for(const f of pz){
     pc.pausas[f].forEach((z,i) => {
-      h += '<div class="pausa-fila"><span style="flex:1">'+capital(fechaCorta(f))+' · '+hora12(aMin(z.ini))+' a '+hora12(aMin(z.fin))+'</span>'+
+      h += '<div class="pausa-fila"><span style="flex:1">'+capital(fechaCorta(f))+', de '+hora12(aMin(z.ini))+' a '+hora12(aMin(z.fin))+'</span>'+
         '<button class="txt-btn" onclick="quitarPausaFecha(\''+pc.id+'\',\''+f+'\','+i+')">quitar</button></div>';
     });
   }
   h += '<button class="mini" onclick="modalPausa({prof:\''+pc.id+'\',fecha:null})">Agregar pausa en una fecha</button>';
   h += '</div>';
+  h += '</div><div class="pan-col">';
   /* Servicios, por categoría */
   h += '<div class="rot">Servicios</div>';
   h += '<div class="card"><div class="nota" style="margin-bottom:4px">Los precios y descripciones son los de su menú. Las duraciones marcadas <span class="tag">estimado</span> las puse yo: corregilas.</div>';
@@ -3418,7 +3511,7 @@ function tabConfig(){
 
   h += '<div class="rot">Cuándo se puede reservar</div>';
   h += '<div class="card">'+
-    '<div class="campo"><label>Anticipación mínima, en minutos <span class="tag aviso" style="letter-spacing:.1em">por confirmar</span></label>'+
+    '<div class="campo"><label>Anticipación mínima, en minutos <span class="tag aviso">por confirmar</span></label>'+
     '<input class="inp" type="number" step="30" min="0" value="'+S.config.anticipacionMinima+'" onchange="setCfg(\'anticipacionMinima\',this.value)">'+
     '<div class="nota" style="margin-top:6px">Son '+dur(S.config.anticipacionMinima)+'. Nadie puede reservar por el link para dentro de menos de ese rato, '+
     'para que les dé tiempo de ver la reserva y confirmar. Las citas que anotan a mano no tienen este límite.</div></div>'+
@@ -3430,13 +3523,13 @@ function tabConfig(){
   h += '<div class="rot">Últimos cambios en el panel</div><div class="card">';
   const reg = (S.registro||[]).slice(0,12);
   if(!reg.length) h += '<div class="nota">Todavía no hay cambios. Cada cambio de horario, servicio o configuración queda acá con el nombre de quien lo hizo.</div>';
-  for(const r of reg) h += '<div class="reg"><div>'+esc(r.a)+'</div><div class="nota">'+esc(r.q)+' · '+cuandoTxt(r.t)+'</div></div>';
+  for(const r of reg) h += '<div class="reg"><div>'+esc(r.a)+'</div><div class="nota">'+esc(r.q)+', '+cuandoTxt(r.t)+'</div></div>';
   h += '</div>';
 
   h += '<div class="rot">Datos de la demo</div>';
   h += '<div class="card"><div class="nota" style="margin-bottom:10px">Deja todo como estaba al abrir por primera vez: citas de ejemplo, horarios y servicios.</div>'+
     '<button class="mini r" onclick="if(confirm(\'¿Restablecer la demo?\')){reiniciar();V.admin.fecha=hoyCR();V.admin.prof=\'todas\';pintar();aviso(\'Demo restablecida\')}">Restablecer la demo</button></div>';
-  return h;
+  return h+'</div></div>';
 }
 function cfgPro(id){ V.admin.cfgProf = id; pintar(); }
 
@@ -3456,7 +3549,14 @@ function selHora(valor, accion){
 function editorDia(ref, titulo, bl, opc){
   opc = opc || {};
   const trabaja = bl.length > 0;
-  let h = '<div class="dia-cfg"><div class="nom"><span style="flex:1">'+esc(titulo)+'</span>'+
+  // En celular cada día se ve en una línea ("Lunes, 9:00 a.m. a 6:00 p.m.") y se abre al tocarla.
+  // En computadora se ven todos abiertos (la línea de resumen se oculta).
+  const abierto = (V.admin.diasAbiertos || []).includes(ref);
+  const resumen = trabaja ? bl.map(b => hora12(aMin(b.ini))+' a '+hora12(aMin(b.fin))).join(' y ') : 'no trabaja';
+  let h = '<div class="dia-cfg plegable'+(abierto?' abierto':'')+'">'+
+    '<button class="dia-res" onclick="plegarDia(\''+ref+'\')" aria-expanded="'+abierto+'">'+
+      '<span><b>'+esc(titulo)+'</b>, '+resumen+'</span>'+ICO.flechaD+'</button>'+
+    '<div class="dia-cuerpo"><div class="nom"><span style="flex:1">'+esc(titulo)+'</span>'+
     '<button class="interruptor '+(trabaja?'on':'')+'" style="width:auto" onclick="trabajaRef(\''+ref+'\','+(!trabaja)+')">'+
       '<span class="riel"></span><span class="nota" style="text-transform:none;letter-spacing:0;width:70px">'+(trabaja?'Trabaja':'No trabaja')+'</span></button>'+
     (opc.quitar ? '<button class="quitar" title="Quitar la excepción" onclick="quitarExcepcion(\''+ref.slice(2)+'\')">×</button>' : '')+'</div>';
@@ -3468,13 +3568,19 @@ function editorDia(ref, titulo, bl, opc){
       selHora(b.fin, "setBloque('"+ref+"',"+k+",'fin',this.value)")+
       '<button class="quitar" title="Quitar este bloque" onclick="quitarBloqueRef(\''+ref+'\','+k+')">×</button></div>';
     const g = gaps.find(x => x.k === k);
-    if(g) h += '<div class="pausa-fila"><span style="flex:1">Pausa · '+hora12(aMin(g.ini))+' a '+hora12(aMin(g.fin))+'</span>'+
+    if(g) h += '<div class="pausa-fila"><span style="flex:1">Pausa de '+hora12(aMin(g.ini))+' a '+hora12(aMin(g.fin))+'</span>'+
       '<button class="txt-btn" onclick="unirPausa(\''+ref+'\','+k+')">quitar</button></div>';
   });
   if(trabaja) h += '<div class="chips" style="margin-top:2px">'+
     '<button class="mini" onclick="modalPausa({ref:\''+ref+'\'})">Agregar pausa</button>'+
     '<button class="mini" onclick="agregarBloqueRef(\''+ref+'\')">Agregar bloque</button></div>';
-  return h+'</div>';
+  return h+'</div></div>';
+}
+function plegarDia(ref){
+  const l = V.admin.diasAbiertos = V.admin.diasAbiertos || [];
+  const i = l.indexOf(ref);
+  if(i >= 0) l.splice(i,1); else l.push(ref);
+  pintar();
 }
 const profCfg = () => prof(V.admin.cfgProf);
 function bloquesRef(ref){
@@ -3504,7 +3610,7 @@ function cambiarRef(ref, fn, accion){
   const err = validarBloques(bl);
   if(err){ aviso(err); pintar(); return false; }
   asignarRef(ref, bl);
-  anotar(accion+' · '+p.nombre+', '+nombreRef(ref));
+  anotar(accion+': '+p.nombre+', '+nombreRef(ref));
   guardar(); aviso('Horario de '+p.nombre+' guardado'); avisarFuera(p); pintar();
   return true;
 }
@@ -3531,13 +3637,13 @@ function agregarExcepcion(trabaja){
   if(tieneExcepcion(p, f)){ aviso('Ese día ya tiene una excepción: editala abajo'); return; }
   const base = copiaBloques(p.horarios[diaSemana(f)]);
   p.excepciones[f] = trabaja ? (base.length ? base : [{ini:'09:00', fin:'18:00'}]) : [];
-  anotar((trabaja ? 'Puso horario distinto' : 'Marcó que no trabaja')+' · '+p.nombre+', el '+fechaLarga(f).toLowerCase());
+  anotar((trabaja ? 'Puso horario distinto' : 'Marcó que no trabaja')+': '+p.nombre+', el '+fechaLarga(f).toLowerCase());
   guardar(); aviso(trabaja ? 'Ajustá las horas de ese día abajo' : p.nombre+' no trabaja ese día'); avisarFuera(p); pintar();
 }
 function quitarExcepcion(f){
   const p = profCfg();
   delete p.excepciones[f];
-  anotar('Quitó la excepción · '+p.nombre+', el '+fechaLarga(f).toLowerCase()+' vuelve a la semana normal');
+  anotar('Quitó la excepción: '+p.nombre+', el '+fechaLarga(f).toLowerCase()+' vuelve a la semana normal');
   guardar(); aviso('Ese día vuelve a la semana normal'); avisarFuera(p); pintar();
 }
 
@@ -3561,8 +3667,8 @@ function modalPausa(o){
 function pintarPausa(){
   const z = V._pz, p = prof(z.prof);
   const titulo = z.ref ? 'Agregar pausa' : 'Bloquear un rato';
-  const sub = z.ref ? p.nombre+' · '+nombreRef(z.ref)+'. Se repite '+(z.ref.startsWith('b:')?'todas las semanas':'solo ese día')+'.'
-                    : p.nombre+' · solo ese día. Su horario normal no cambia.';
+  const sub = z.ref ? p.nombre+', '+nombreRef(z.ref)+'. Se repite '+(z.ref.startsWith('b:')?'todas las semanas':'solo ese día')+'.'
+                    : p.nombre+', solo ese día. Su horario normal no cambia.';
   let h = '<div class="modal-enc"><div><h3>'+titulo+'</h3><div class="nota">'+esc(sub)+'</div></div>'+
     '<button class="x" onclick="cerrarModal()">×</button></div>';
   if(z.conFecha) h += '<div class="campo"><label>Día</label><input class="inp" type="date" min="'+hoyCR()+'" value="'+(z.fecha||'')+'" onchange="V._pz.fecha=this.value;V._pz.err=\'\';pintarPausa()"></div>';
@@ -3594,14 +3700,14 @@ function confirmarPausa(){
   pp.pausas = pp.pausas || {};
   (pp.pausas[z.fecha] = pp.pausas[z.fecha] || []).push({ini:z.ini, fin:z.fin});
   pp.pausas[z.fecha].sort((x,y) => aMin(x.ini) - aMin(y.ini));
-  anotar('Bloqueó un rato · '+pp.nombre+', el '+fechaLarga(z.fecha).toLowerCase()+' de '+hora12(a)+' a '+hora12(b));
+  anotar('Bloqueó un rato: '+pp.nombre+', el '+fechaLarga(z.fecha).toLowerCase()+' de '+hora12(a)+' a '+hora12(b));
   guardar(); cerrarModal(); aviso('Rato bloqueado en la agenda de '+pp.nombre); pintar();
 }
 function quitarPausaFecha(profId, f, i){
   const p = prof(profId), z = p.pausas[f][i];
   p.pausas[f].splice(i,1);
   if(!p.pausas[f].length) delete p.pausas[f];
-  anotar('Quitó un rato bloqueado · '+p.nombre+', el '+fechaLarga(f).toLowerCase()+' de '+hora12(aMin(z.ini))+' a '+hora12(aMin(z.fin)));
+  anotar('Quitó un rato bloqueado: '+p.nombre+', el '+fechaLarga(f).toLowerCase()+' de '+hora12(aMin(z.ini))+' a '+hora12(aMin(z.fin)));
   guardar(); aviso('Ese rato vuelve a estar disponible'); pintar();
 }
 function setPro(i,q,v){
@@ -3712,7 +3818,7 @@ function tabIngresos(){
   const sum = arr => arr.reduce((s,c)=>s+cobrado(c),0);
   const entre = (arr,a,b) => arr.filter(c=>c.fecha>=a && c.fecha<=b);
   const plural = n => n+' cita'+(n===1?'':'s');
-  const quien = V.admin.prof === 'todas' ? '' : ' · '+nombreProf(V.admin.prof);
+  const quien = V.admin.prof === 'todas' ? '' : ' ('+nombreProf(V.admin.prof)+')';
 
   /* Tarjetas de arriba: el período actual de cada tipo. Tocar una la abre abajo. */
   let h = '<div class="rot">Cobrado, solo citas completadas'+esc(quien)+'</div><div class="kpis cuatro">';
@@ -3744,12 +3850,14 @@ function tabIngresos(){
       '<h3 style="text-align:center;font-size:17px">'+esc(titulo)+'</h3>'+
       '<button class="flecha" onclick="ingMover(1)" aria-label="Período siguiente">'+ICO.flechaD+'</button></div>';
   h += '<div class="card ing-total"><div class="nota">Cobrado'+esc(quien)+'</div><div class="v">'+col(total)+'</div>'+
-    '<div class="nota">'+plural(delPer.length)+(delPer.length > 1 ? ' · promedio '+col(total/delPer.length)+' por cita' : '')+'</div></div>';
+    '<div class="nota">'+plural(delPer.length)+(delPer.length > 1 ? ', promedio '+col(total/delPer.length)+' por cita' : '')+'</div></div>';
 
   if(!delPer.length){
     h += vacio(e.per==='dia' && e.ref===hoy ? 'Todavía no hay citas completadas hoy.' : 'No hay citas completadas en este período.', 'hoja');
   }
 
+  // en computadora: tiempo y profesionales a la izquierda; servicios y citas a la derecha
+  h += '<div class="pan-cols"><div class="pan-col">';
   /* Cómo se repartió en el tiempo: mes a mes en el año, día a día en semana y mes. Cada fila abre ese período. */
   const dias = Math.round((deYMD(hasta) - deYMD(desde)) / 864e5) + 1;
   if(delPer.length && e.per !== 'dia'){
@@ -3794,12 +3902,13 @@ function tabIngresos(){
       const marcada = V.admin.prof === p.id;
       h += '<div style="padding:7px 0;'+(V.admin.prof!=='todas' && !marcada?'opacity:.55':'')+'">'+
         '<div class="lin" style="padding:0"><span style="display:flex;align-items:center;gap:8px"><span class="bolita" style="--c:'+esc(p.color)+'"></span>'+esc(p.nombre)+
-        ' <span class="nota">× '+suyas.length+' · '+pct+'%</span></span><span class="v">'+col(m)+'</span></div>'+
+        ' <span class="nota">× '+suyas.length+', '+pct+'%</span></span><span class="v">'+col(m)+'</span></div>'+
         '<div class="barra-pro" style="--c:'+esc(p.color)+'"><i style="width:'+pct+'%"></i></div></div>';
     }
     h += '<div class="lin tot"><span>Total del estudio</span><span class="v">'+col(totPer)+'</span></div></div>';
   }
 
+  h += '</div><div class="pan-col">';
   /* Por servicio */
   if(delPer.length){
     const cuentas = {};
@@ -3859,11 +3968,12 @@ function tabIngresos(){
     h += '<div class="nota" style="margin-top:14px">Además hay '+plural(porCobrar.length)+' confirmada'+(porCobrar.length===1?'':'s')+
       ' en este período, por '+col(porCobrar.reduce((s,c)=>s+c.total,0))+'. Se suman cuando se marcan como completadas.</div>';
   }
+  h += '</div></div>';
 
   /* Citas que entraron solas por el link en el período */
   const porLink = S.citas.filter(c=>c.origen==='link' && deVista(c) && c.fecha>=desde && c.fecha<=hasta && ['aprobada','completada'].includes(c.estado));
   h += '<div style="height:14px"></div>';
-  h += '<div class="destacado"><div class="et" style="font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--acento)">Citas que entraron solas</div>'+
+  h += '<div class="destacado"><div class="et" style="font-size:13px;color:var(--acento)">Citas que entraron solas</div>'+
     '<div class="v">'+porLink.length+'</div>'+
     '<div class="nota">agendadas por el link en este período, sin que tocaran el teléfono. '+
     (porLink.length ? 'Son '+col(porLink.reduce((s,c)=>s+c.total,0))+' coordinados sin escribir un mensaje.' : 'Cuando alguien reserve por el link, se cuenta acá.')+'</div></div>';
@@ -3881,9 +3991,9 @@ function capturaDemo(){
   x.strokeStyle = 'rgba(126,128,101,.35)'; x.lineWidth = 1;
   x.strokeRect(20.5,20.5,379,219);
   x.fillStyle = '#7E8065';
-  x.font = '300 15px Jost, sans-serif';
+  x.font = '300 15px "Albert Sans", sans-serif';
   x.fillText('Captura del comprobante', 44, 70);
-  x.font = '300 12px Jost, sans-serif';
+  x.font = '300 12px "Albert Sans", sans-serif';
   x.fillStyle = '#6B6C5C';
   x.fillText('La clienta adjunta acá su pantallazo del SINPE.', 44, 100);
   x.fillText('Ejemplo de la demo.', 44, 122);
